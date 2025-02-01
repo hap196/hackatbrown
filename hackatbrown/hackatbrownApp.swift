@@ -1,17 +1,18 @@
-//
-//  hackatbrownApp.swift
-//  hackatbrown
-//
-//  Created by Hailey Pan on 2/1/25.
-//
-
 import SwiftUI
+import Firebase
 
 @main
 struct hackatbrownApp: App {
+    
+    init() {
+        // initialize Firebase when the app starts
+        FirebaseApp.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // show loginview
+            LandingView()
         }
     }
 }

@@ -14,6 +14,39 @@
 		1CA32C222D4E999100B65243 /* hackatbrownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C212D4E999100B65243 /* hackatbrownTests.swift */; };
 		1CA32C2C2D4E999100B65243 /* hackatbrownUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C2B2D4E999100B65243 /* hackatbrownUITests.swift */; };
 		1CA32C2E2D4E999100B65243 /* hackatbrownUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C2D2D4E999100B65243 /* hackatbrownUITestsLaunchTests.swift */; };
+		1CA32C402D4E9C6000B65243 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C3F2D4E9C6000B65243 /* GoogleService-Info.plist */; };
+		1CA32C432D4E9CE600B65243 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1CA32C422D4E9CE600B65243 /* FirebaseAnalytics */; };
+		1CA32C452D4E9CE600B65243 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 1CA32C442D4E9CE600B65243 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		1CA32C472D4E9E2900B65243 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C462D4E9E2900B65243 /* LoginView.swift */; };
+		1CA32C492D4E9EF500B65243 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C482D4E9EF500B65243 /* LandingView.swift */; };
+		1CA32C4B2D4E9F5600B65243 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C4A2D4E9F5600B65243 /* SignUpView.swift */; };
+		1CA32C4F2D4EA17700B65243 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1CA32C4E2D4EA17700B65243 /* FirebaseAuth */; };
+		1CA32C512D4EA17700B65243 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CA32C502D4EA17700B65243 /* FirebaseCore */; };
+		1CA32C532D4EA17700B65243 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CA32C522D4EA17700B65243 /* FirebaseFirestore */; };
+		1CA32C9C2D4EAEA600B65243 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C872D4EAEA600B65243 /* OFL.txt */; };
+		1CA32C9D2D4EAEA600B65243 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C882D4EAEA600B65243 /* README.txt */; };
+		1CA32C9E2D4EAEA600B65243 /* RedditSans-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C892D4EAEA600B65243 /* RedditSans-Black.ttf */; };
+		1CA32C9F2D4EAEA600B65243 /* RedditSans-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C8A2D4EAEA600B65243 /* RedditSans-BlackItalic.ttf */; };
+		1CA32CA02D4EAEA600B65243 /* RedditSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C8B2D4EAEA600B65243 /* RedditSans-Bold.ttf */; };
+		1CA32CA12D4EAEA600B65243 /* RedditSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C8C2D4EAEA600B65243 /* RedditSans-BoldItalic.ttf */; };
+		1CA32CA22D4EAEA600B65243 /* RedditSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C8D2D4EAEA600B65243 /* RedditSans-ExtraBold.ttf */; };
+		1CA32CA32D4EAEA600B65243 /* RedditSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C8E2D4EAEA600B65243 /* RedditSans-ExtraBoldItalic.ttf */; };
+		1CA32CA42D4EAEA600B65243 /* RedditSans-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C8F2D4EAEA600B65243 /* RedditSans-ExtraLight.ttf */; };
+		1CA32CA52D4EAEA600B65243 /* RedditSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C902D4EAEA600B65243 /* RedditSans-ExtraLightItalic.ttf */; };
+		1CA32CA62D4EAEA600B65243 /* RedditSans-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C912D4EAEA600B65243 /* RedditSans-Italic-VariableFont_wght.ttf */; };
+		1CA32CA72D4EAEA600B65243 /* RedditSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C922D4EAEA600B65243 /* RedditSans-Italic.ttf */; };
+		1CA32CA82D4EAEA600B65243 /* RedditSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C932D4EAEA600B65243 /* RedditSans-Light.ttf */; };
+		1CA32CA92D4EAEA600B65243 /* RedditSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C942D4EAEA600B65243 /* RedditSans-LightItalic.ttf */; };
+		1CA32CAA2D4EAEA600B65243 /* RedditSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C952D4EAEA600B65243 /* RedditSans-Medium.ttf */; };
+		1CA32CAB2D4EAEA600B65243 /* RedditSans-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C962D4EAEA600B65243 /* RedditSans-MediumItalic.ttf */; };
+		1CA32CAC2D4EAEA600B65243 /* RedditSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C972D4EAEA600B65243 /* RedditSans-Regular.ttf */; };
+		1CA32CAD2D4EAEA600B65243 /* RedditSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C982D4EAEA600B65243 /* RedditSans-SemiBold.ttf */; };
+		1CA32CAE2D4EAEA600B65243 /* RedditSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C992D4EAEA600B65243 /* RedditSans-SemiBoldItalic.ttf */; };
+		1CA32CAF2D4EAEA600B65243 /* RedditSans-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C9A2D4EAEA600B65243 /* RedditSans-VariableFont_wght.ttf */; };
+		1CA32CB52D4EBC0B00B65243 /* index.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CB42D4EBC0B00B65243 /* index.js */; };
+		1CA32CB72D4EBC2E00B65243 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CB62D4EBC2E00B65243 /* .env */; };
+		1CA32CBA2D4EBCFE00B65243 /* user.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CB92D4EBCFE00B65243 /* user.js */; };
+		1CA32CBD2D4EBD2000B65243 /* userRoutes.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CBC2D4EBD2000B65243 /* userRoutes.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +77,35 @@
 		1CA32C272D4E999100B65243 /* hackatbrownUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hackatbrownUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CA32C2B2D4E999100B65243 /* hackatbrownUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hackatbrownUITests.swift; sourceTree = "<group>"; };
 		1CA32C2D2D4E999100B65243 /* hackatbrownUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hackatbrownUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		1CA32C3F2D4E9C6000B65243 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1CA32C462D4E9E2900B65243 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		1CA32C482D4E9EF500B65243 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
+		1CA32C4A2D4E9F5600B65243 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		1CA32C872D4EAEA600B65243 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
+		1CA32C882D4EAEA600B65243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		1CA32C892D4EAEA600B65243 /* RedditSans-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Black.ttf"; sourceTree = "<group>"; };
+		1CA32C8A2D4EAEA600B65243 /* RedditSans-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-BlackItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C8B2D4EAEA600B65243 /* RedditSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Bold.ttf"; sourceTree = "<group>"; };
+		1CA32C8C2D4EAEA600B65243 /* RedditSans-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-BoldItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C8D2D4EAEA600B65243 /* RedditSans-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-ExtraBold.ttf"; sourceTree = "<group>"; };
+		1CA32C8E2D4EAEA600B65243 /* RedditSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C8F2D4EAEA600B65243 /* RedditSans-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-ExtraLight.ttf"; sourceTree = "<group>"; };
+		1CA32C902D4EAEA600B65243 /* RedditSans-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C912D4EAEA600B65243 /* RedditSans-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		1CA32C922D4EAEA600B65243 /* RedditSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Italic.ttf"; sourceTree = "<group>"; };
+		1CA32C932D4EAEA600B65243 /* RedditSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Light.ttf"; sourceTree = "<group>"; };
+		1CA32C942D4EAEA600B65243 /* RedditSans-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-LightItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C952D4EAEA600B65243 /* RedditSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Medium.ttf"; sourceTree = "<group>"; };
+		1CA32C962D4EAEA600B65243 /* RedditSans-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-MediumItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C972D4EAEA600B65243 /* RedditSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-Regular.ttf"; sourceTree = "<group>"; };
+		1CA32C982D4EAEA600B65243 /* RedditSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		1CA32C992D4EAEA600B65243 /* RedditSans-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		1CA32C9A2D4EAEA600B65243 /* RedditSans-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RedditSans-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		1CA32CB02D4EAEB200B65243 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1CA32CB42D4EBC0B00B65243 /* index.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = index.js; sourceTree = "<group>"; };
+		1CA32CB62D4EBC2E00B65243 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
+		1CA32CB92D4EBCFE00B65243 /* user.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = user.js; sourceTree = "<group>"; };
+		1CA32CBC2D4EBD2000B65243 /* userRoutes.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = userRoutes.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +113,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA32C432D4E9CE600B65243 /* FirebaseAnalytics in Frameworks */,
+				1CA32C4F2D4EA17700B65243 /* FirebaseAuth in Frameworks */,
+				1CA32C512D4EA17700B65243 /* FirebaseCore in Frameworks */,
+				1CA32C532D4EA17700B65243 /* FirebaseFirestore in Frameworks */,
+				1CA32C452D4E9CE600B65243 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,8 +161,15 @@
 		1CA32C0F2D4E999000B65243 /* hackatbrown */ = {
 			isa = PBXGroup;
 			children = (
+				1CA32CB12D4EBBC900B65243 /* backend */,
+				1CA32CB02D4EAEB200B65243 /* Info.plist */,
+				1CA32C5B2D4EAE2E00B65243 /* Resources */,
+				1CA32C3F2D4E9C6000B65243 /* GoogleService-Info.plist */,
 				1CA32C102D4E999000B65243 /* hackatbrownApp.swift */,
 				1CA32C122D4E999000B65243 /* ContentView.swift */,
+				1CA32C462D4E9E2900B65243 /* LoginView.swift */,
+				1CA32C4A2D4E9F5600B65243 /* SignUpView.swift */,
+				1CA32C482D4E9EF500B65243 /* LandingView.swift */,
 				1CA32C142D4E999100B65243 /* Assets.xcassets */,
 				1CA32C162D4E999100B65243 /* Preview Content */,
 			);
@@ -127,6 +201,77 @@
 			path = hackatbrownUITests;
 			sourceTree = "<group>";
 		};
+		1CA32C5B2D4EAE2E00B65243 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1CA32C9B2D4EAEA600B65243 /* Reddit_Sans */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1CA32C862D4EAEA600B65243 /* static */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = static;
+			sourceTree = "<group>";
+		};
+		1CA32C9B2D4EAEA600B65243 /* Reddit_Sans */ = {
+			isa = PBXGroup;
+			children = (
+				1CA32C862D4EAEA600B65243 /* static */,
+				1CA32C872D4EAEA600B65243 /* OFL.txt */,
+				1CA32C882D4EAEA600B65243 /* README.txt */,
+				1CA32C892D4EAEA600B65243 /* RedditSans-Black.ttf */,
+				1CA32C8A2D4EAEA600B65243 /* RedditSans-BlackItalic.ttf */,
+				1CA32C8B2D4EAEA600B65243 /* RedditSans-Bold.ttf */,
+				1CA32C8C2D4EAEA600B65243 /* RedditSans-BoldItalic.ttf */,
+				1CA32C8D2D4EAEA600B65243 /* RedditSans-ExtraBold.ttf */,
+				1CA32C8E2D4EAEA600B65243 /* RedditSans-ExtraBoldItalic.ttf */,
+				1CA32C8F2D4EAEA600B65243 /* RedditSans-ExtraLight.ttf */,
+				1CA32C902D4EAEA600B65243 /* RedditSans-ExtraLightItalic.ttf */,
+				1CA32C912D4EAEA600B65243 /* RedditSans-Italic-VariableFont_wght.ttf */,
+				1CA32C922D4EAEA600B65243 /* RedditSans-Italic.ttf */,
+				1CA32C932D4EAEA600B65243 /* RedditSans-Light.ttf */,
+				1CA32C942D4EAEA600B65243 /* RedditSans-LightItalic.ttf */,
+				1CA32C952D4EAEA600B65243 /* RedditSans-Medium.ttf */,
+				1CA32C962D4EAEA600B65243 /* RedditSans-MediumItalic.ttf */,
+				1CA32C972D4EAEA600B65243 /* RedditSans-Regular.ttf */,
+				1CA32C982D4EAEA600B65243 /* RedditSans-SemiBold.ttf */,
+				1CA32C992D4EAEA600B65243 /* RedditSans-SemiBoldItalic.ttf */,
+				1CA32C9A2D4EAEA600B65243 /* RedditSans-VariableFont_wght.ttf */,
+			);
+			name = Reddit_Sans;
+			path = ../../../../../Downloads/Reddit_Sans;
+			sourceTree = "<group>";
+		};
+		1CA32CB12D4EBBC900B65243 /* backend */ = {
+			isa = PBXGroup;
+			children = (
+				1CA32CBB2D4EBD1000B65243 /* routes */,
+				1CA32CB82D4EBCEC00B65243 /* models */,
+				1CA32CB42D4EBC0B00B65243 /* index.js */,
+				1CA32CB62D4EBC2E00B65243 /* .env */,
+			);
+			path = backend;
+			sourceTree = "<group>";
+		};
+		1CA32CB82D4EBCEC00B65243 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				1CA32CB92D4EBCFE00B65243 /* user.js */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		1CA32CBB2D4EBD1000B65243 /* routes */ = {
+			isa = PBXGroup;
+			children = (
+				1CA32CBC2D4EBD2000B65243 /* userRoutes.js */,
+			);
+			path = routes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +288,13 @@
 			dependencies = (
 			);
 			name = hackatbrown;
+			packageProductDependencies = (
+				1CA32C422D4E9CE600B65243 /* FirebaseAnalytics */,
+				1CA32C442D4E9CE600B65243 /* FirebaseAnalyticsWithoutAdIdSupport */,
+				1CA32C4E2D4EA17700B65243 /* FirebaseAuth */,
+				1CA32C502D4EA17700B65243 /* FirebaseCore */,
+				1CA32C522D4EA17700B65243 /* FirebaseFirestore */,
+			);
 			productName = hackatbrown;
 			productReference = 1CA32C0D2D4E999000B65243 /* hackatbrown.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +367,9 @@
 				Base,
 			);
 			mainGroup = 1CA32C042D4E999000B65243;
+			packageReferences = (
+				1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 1CA32C0E2D4E999000B65243 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -231,8 +386,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA32CA52D4EAEA600B65243 /* RedditSans-ExtraLightItalic.ttf in Resources */,
+				1CA32CA32D4EAEA600B65243 /* RedditSans-ExtraBoldItalic.ttf in Resources */,
+				1CA32CAE2D4EAEA600B65243 /* RedditSans-SemiBoldItalic.ttf in Resources */,
+				1CA32CB52D4EBC0B00B65243 /* index.js in Resources */,
+				1CA32CAC2D4EAEA600B65243 /* RedditSans-Regular.ttf in Resources */,
 				1CA32C182D4E999100B65243 /* Preview Assets.xcassets in Resources */,
+				1CA32C9F2D4EAEA600B65243 /* RedditSans-BlackItalic.ttf in Resources */,
 				1CA32C152D4E999100B65243 /* Assets.xcassets in Resources */,
+				1CA32C9C2D4EAEA600B65243 /* OFL.txt in Resources */,
+				1CA32CA82D4EAEA600B65243 /* RedditSans-Light.ttf in Resources */,
+				1CA32C9E2D4EAEA600B65243 /* RedditSans-Black.ttf in Resources */,
+				1CA32CA72D4EAEA600B65243 /* RedditSans-Italic.ttf in Resources */,
+				1CA32C402D4E9C6000B65243 /* GoogleService-Info.plist in Resources */,
+				1CA32CAA2D4EAEA600B65243 /* RedditSans-Medium.ttf in Resources */,
+				1CA32CAD2D4EAEA600B65243 /* RedditSans-SemiBold.ttf in Resources */,
+				1CA32CA02D4EAEA600B65243 /* RedditSans-Bold.ttf in Resources */,
+				1CA32CA22D4EAEA600B65243 /* RedditSans-ExtraBold.ttf in Resources */,
+				1CA32CAF2D4EAEA600B65243 /* RedditSans-VariableFont_wght.ttf in Resources */,
+				1CA32CA62D4EAEA600B65243 /* RedditSans-Italic-VariableFont_wght.ttf in Resources */,
+				1CA32CAB2D4EAEA600B65243 /* RedditSans-MediumItalic.ttf in Resources */,
+				1CA32CBD2D4EBD2000B65243 /* userRoutes.js in Resources */,
+				1CA32CB72D4EBC2E00B65243 /* .env in Resources */,
+				1CA32CBA2D4EBCFE00B65243 /* user.js in Resources */,
+				1CA32CA92D4EAEA600B65243 /* RedditSans-LightItalic.ttf in Resources */,
+				1CA32CA12D4EAEA600B65243 /* RedditSans-BoldItalic.ttf in Resources */,
+				1CA32C9D2D4EAEA600B65243 /* README.txt in Resources */,
+				1CA32CA42D4EAEA600B65243 /* RedditSans-ExtraLight.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +437,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA32C492D4E9EF500B65243 /* LandingView.swift in Sources */,
+				1CA32C4B2D4E9F5600B65243 /* SignUpView.swift in Sources */,
+				1CA32C472D4E9E2900B65243 /* LoginView.swift in Sources */,
 				1CA32C132D4E999000B65243 /* ContentView.swift in Sources */,
 				1CA32C112D4E999000B65243 /* hackatbrownApp.swift in Sources */,
 			);
@@ -424,6 +607,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"hackatbrown/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = hackatbrown/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -452,6 +636,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"hackatbrown/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = hackatbrown/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -582,6 +767,45 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1CA32C422D4E9CE600B65243 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		1CA32C442D4E9CE600B65243 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		1CA32C4E2D4EA17700B65243 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		1CA32C502D4EA17700B65243 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		1CA32C522D4EA17700B65243 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CA32C412D4E9CE600B65243 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1CA32C052D4E999000B65243 /* Project object */;
 }
