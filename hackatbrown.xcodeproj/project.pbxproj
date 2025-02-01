@@ -47,6 +47,14 @@
 		1CA32CB72D4EBC2E00B65243 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CB62D4EBC2E00B65243 /* .env */; };
 		1CA32CBA2D4EBCFE00B65243 /* user.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CB92D4EBCFE00B65243 /* user.js */; };
 		1CA32CBD2D4EBD2000B65243 /* userRoutes.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CBC2D4EBD2000B65243 /* userRoutes.js */; };
+		1CA32CBF2D4EC14200B65243 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CBE2D4EC14200B65243 /* HomeView.swift */; };
+		1CA32CC12D4EC2AB00B65243 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CC02D4EC2AB00B65243 /* SettingsView.swift */; };
+		1CA32CC32D4EC2B200B65243 /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CC22D4EC2B200B65243 /* AlertsView.swift */; };
+		1CA32CC52D4EC2C000B65243 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CC42D4EC2C000B65243 /* ScanView.swift */; };
+		1CA32CC72D4EC36500B65243 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CC62D4EC36500B65243 /* MainTabView.swift */; };
+		1CA32CC92D4EC55400B65243 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CC82D4EC55400B65243 /* AuthViewModel.swift */; };
+		1CA32CCB2D4EC77900B65243 /* PlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32CCA2D4EC77900B65243 /* PlanView.swift */; };
+		1CA32CCD2D4ECE4200B65243 /* pillRoutes.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CCC2D4ECE4200B65243 /* pillRoutes.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +114,14 @@
 		1CA32CB62D4EBC2E00B65243 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
 		1CA32CB92D4EBCFE00B65243 /* user.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = user.js; sourceTree = "<group>"; };
 		1CA32CBC2D4EBD2000B65243 /* userRoutes.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = userRoutes.js; sourceTree = "<group>"; };
+		1CA32CBE2D4EC14200B65243 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1CA32CC02D4EC2AB00B65243 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1CA32CC22D4EC2B200B65243 /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
+		1CA32CC42D4EC2C000B65243 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		1CA32CC62D4EC36500B65243 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		1CA32CC82D4EC55400B65243 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		1CA32CCA2D4EC77900B65243 /* PlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
+		1CA32CCC2D4ECE4200B65243 /* pillRoutes.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = pillRoutes.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,9 +182,16 @@
 				1CA32C5B2D4EAE2E00B65243 /* Resources */,
 				1CA32C3F2D4E9C6000B65243 /* GoogleService-Info.plist */,
 				1CA32C102D4E999000B65243 /* hackatbrownApp.swift */,
+				1CA32CC82D4EC55400B65243 /* AuthViewModel.swift */,
 				1CA32C122D4E999000B65243 /* ContentView.swift */,
 				1CA32C462D4E9E2900B65243 /* LoginView.swift */,
 				1CA32C4A2D4E9F5600B65243 /* SignUpView.swift */,
+				1CA32CC02D4EC2AB00B65243 /* SettingsView.swift */,
+				1CA32CC62D4EC36500B65243 /* MainTabView.swift */,
+				1CA32CC22D4EC2B200B65243 /* AlertsView.swift */,
+				1CA32CC42D4EC2C000B65243 /* ScanView.swift */,
+				1CA32CBE2D4EC14200B65243 /* HomeView.swift */,
+				1CA32CCA2D4EC77900B65243 /* PlanView.swift */,
 				1CA32C482D4E9EF500B65243 /* LandingView.swift */,
 				1CA32C142D4E999100B65243 /* Assets.xcassets */,
 				1CA32C162D4E999100B65243 /* Preview Content */,
@@ -268,6 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				1CA32CBC2D4EBD2000B65243 /* userRoutes.js */,
+				1CA32CCC2D4ECE4200B65243 /* pillRoutes.js */,
 			);
 			path = routes;
 			sourceTree = "<group>";
@@ -413,6 +437,7 @@
 				1CA32CA12D4EAEA600B65243 /* RedditSans-BoldItalic.ttf in Resources */,
 				1CA32C9D2D4EAEA600B65243 /* README.txt in Resources */,
 				1CA32CA42D4EAEA600B65243 /* RedditSans-ExtraLight.ttf in Resources */,
+				1CA32CCD2D4ECE4200B65243 /* pillRoutes.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,11 +462,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA32CC12D4EC2AB00B65243 /* SettingsView.swift in Sources */,
+				1CA32CC32D4EC2B200B65243 /* AlertsView.swift in Sources */,
 				1CA32C492D4E9EF500B65243 /* LandingView.swift in Sources */,
 				1CA32C4B2D4E9F5600B65243 /* SignUpView.swift in Sources */,
 				1CA32C472D4E9E2900B65243 /* LoginView.swift in Sources */,
+				1CA32CC52D4EC2C000B65243 /* ScanView.swift in Sources */,
+				1CA32CBF2D4EC14200B65243 /* HomeView.swift in Sources */,
+				1CA32CC92D4EC55400B65243 /* AuthViewModel.swift in Sources */,
 				1CA32C132D4E999000B65243 /* ContentView.swift in Sources */,
 				1CA32C112D4E999000B65243 /* hackatbrownApp.swift in Sources */,
+				1CA32CC72D4EC36500B65243 /* MainTabView.swift in Sources */,
+				1CA32CCB2D4EC77900B65243 /* PlanView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

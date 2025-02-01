@@ -7,101 +7,106 @@ struct LoginView: View {
     @State private var errorMessage: String? = nil
     @State private var isLoading = false
 
+    // Access global authentication state
+    @EnvironmentObject var authViewModel: AuthViewModel
+
     var body: some View {
-        VStack(spacing: 30) {
-            // Logo at the top right
-            HStack {
-                Spacer()
-                Image("logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60)
-                    .padding(.trailing, 10)
-            }
+        NavigationStack {
+            VStack(spacing: 30) {
+                // Logo at the top right
+                HStack {
+                    Spacer()
+                    Image("logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60)
+                        .padding(.trailing, 10)
+                }
 
-            // Log in title
-            HStack {
-                Text("Log in")
-                    .font(.custom("RedditSans-Bold", size: 32))
-                    .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                Spacer()  // Left-aligns the title
-            }
+                // Log in title
+                HStack {
+                    Text("Log in")
+                        .font(.custom("RedditSans-Bold", size: 32))
+                        .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                    Spacer()  // Left-aligns the title
+                }
 
-            // Email Field
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Email address")
-                    .font(.custom("RedditSans-Regular", size: 14))
-                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-
-                TextField("example@gmail.com", text: $email)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-
-            }
-
-            // Password Field
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Password")
-                    .font(.custom("RedditSans-Regular", size: 14))
-                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-
-                SecureField("Password", text: $password)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-            }
-
-            // Forgot password link
-            HStack {
-                Spacer()
-                Button(action: {
-                    // Forgot password logic goes here
-                }) {
-                    Text("Forgot password?")
+                // Email Field
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Email address")
                         .font(.custom("RedditSans-Regular", size: 14))
-                        .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
+                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+
+                    TextField("example@gmail.com", text: $email)
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                        .foregroundColor(.black)
                 }
-            }
 
-            // Error message
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .font(.caption)
-            }
+                // Password Field
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Password")
+                        .font(.custom("RedditSans-Regular", size: 14))
+                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
 
-            // Log in button
-            Button(action: login) {
-                Text("Log in")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(red: 0, green: 0.48, blue: 0.60))
-                    .cornerRadius(8)
-            }
-            .disabled(isLoading)
+                    SecureField("Password", text: $password)
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                }
 
-            Spacer()  // Push the sign-up link to the bottom
+                // Forgot password link
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        // Forgot password logic goes here
+                    }) {
+                        Text("Forgot password?")
+                            .font(.custom("RedditSans-Regular", size: 14))
+                            .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
+                    }
+                }
 
-            // Sign-up link
-            HStack {
-                Text("Don’t have an account? ")
-                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-                    .font(.footnote)
+                // Error message
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                }
 
-                NavigationLink(destination: SignUpView()) {
-                    Text("Sign up")
-                        .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
+                // Log in button
+                Button(action: login) {
+                    Text("Log in")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(red: 0, green: 0.48, blue: 0.60))
+                        .cornerRadius(8)
+                }
+                .disabled(isLoading)
+
+                Spacer()  // Push the sign-up link to the bottom
+
+                // Sign-up link
+                HStack {
+                    Text("Don’t have an account? ")
+                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
                         .font(.footnote)
+
+                    NavigationLink(destination: SignUpView()) {
+                        Text("Sign up")
+                            .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
+                            .font(.footnote)
+                    }
                 }
+                .padding(.bottom, 20)  // Add space from the bottom edge
             }
-            .padding(.bottom, 20)  // Add space from the bottom edge
+            .padding()
         }
-        .padding()
     }
 
     private func login() {
@@ -111,13 +116,17 @@ struct LoginView: View {
         }
 
         isLoading = true
+
+        // Firebase Authentication
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            isLoading = false
+            self.isLoading = false
+
             if let error = error {
-                errorMessage = "Login failed: \(error.localizedDescription)"
+                self.errorMessage = "Login failed: \(error.localizedDescription)"
             } else {
                 print("Login successful")
-                // Navigate to the main screen if needed
+                // Update the global authentication state
+                authViewModel.isLoggedIn = true
             }
         }
     }

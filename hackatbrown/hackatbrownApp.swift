@@ -3,16 +3,23 @@ import Firebase
 
 @main
 struct hackatbrownApp: App {
-    
+    // Initialize Firebase
     init() {
-        // initialize Firebase when the app starts
         FirebaseApp.configure()
     }
 
+    // Global authentication state
+    @StateObject private var authViewModel = AuthViewModel()
+
     var body: some Scene {
         WindowGroup {
-            // show loginview
-            LandingView()
+            if authViewModel.isLoggedIn {
+                MainTabView()  // Show main tab navigation if logged in
+                    .environmentObject(authViewModel)
+            } else {
+                LandingView()  // Show login or sign-up if not logged in
+                    .environmentObject(authViewModel)
+            }
         }
     }
 }
