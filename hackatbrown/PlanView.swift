@@ -1,5 +1,4 @@
 import SwiftUI
-import FirebaseAuth
 
 struct PlanView: View {
     @State private var pillName: String = ""
@@ -19,36 +18,53 @@ struct PlanView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                // Title
                 Text("Add Plan")
-                    .font(.custom("RedditSans-Bold", size: 32))
-                    .foregroundColor(.black)
+                    .font(.custom("RedditSans-Bold", size: 28))
+                    .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
 
                 // Pills Name Section
                 VStack(alignment: .leading) {
                     Text("Pills name *")
                         .font(.custom("RedditSans-Regular", size: 16))
-                    TextField("Enter pill name", text: $pillName)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
+                    HStack {
+                        Image(systemName: "pills.fill")
+                            .foregroundColor(.gray)
+                        TextField("Enter pill name", text: $pillName)
+                            .padding(.leading, 8)
+                    }
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
                 }
 
                 // Amount & Duration Section
                 VStack(alignment: .leading) {
                     Text("Amount & Duration *")
                         .font(.custom("RedditSans-Regular", size: 16))
-                    HStack {
-                        TextField("Amount", text: $pillAmount)
-                            .keyboardType(.numberPad)
-                            .padding()
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
+                    HStack(spacing: 10) {
+                        // Pill amount input with reduced width
+                        HStack {
+                            Image(systemName: "pills")
+                                .foregroundColor(.gray)
+                            TextField("Amount", text: $pillAmount)
+                                .keyboardType(.numberPad)
+                        }
+                        .padding()
+                        .frame(maxWidth: 140)  // Adjust width for better fit
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
 
-                        TextField("Duration (days)", text: $duration)
-                            .keyboardType(.numberPad)
-                            .padding()
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
+                        // Duration input with more space
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.gray)
+                            TextField("Duration (days)", text: $duration)
+                                .keyboardType(.numberPad)
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
                     }
                 }
 
@@ -70,6 +86,7 @@ struct PlanView: View {
                             Text(howOften)
                             Spacer()
                             Image(systemName: "chevron.down")
+                                .foregroundColor(.gray)
                         }
                         .padding()
                         .background(Color.gray.opacity(0.1))
@@ -84,11 +101,20 @@ struct PlanView: View {
                 VStack(alignment: .leading) {
                     Text("Specific time & Notification")
                         .font(.custom("RedditSans-Regular", size: 16))
-                    HStack {
-                        DatePicker("Time", selection: $specificTime, displayedComponents: .hourAndMinute)
-                            .labelsHidden()
-                    }
 
+                    // Time input
+                    HStack {
+                        Image(systemName: "clock")
+                            .foregroundColor(.gray)
+                        DatePicker("", selection: $specificTime, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .background(Color.clear)  // Transparent background
+                    }
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+
+                    // Notification dropdown
                     Menu {
                         ForEach(notificationOptions, id: \.self) { option in
                             Button(option) {
@@ -100,6 +126,7 @@ struct PlanView: View {
                             Text(notificationBefore)
                             Spacer()
                             Image(systemName: "chevron.down")
+                                .foregroundColor(.gray)
                         }
                         .padding()
                         .background(Color.gray.opacity(0.1))
@@ -113,13 +140,16 @@ struct PlanView: View {
                         .font(.custom("RedditSans-Regular", size: 16))
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(["Before Breakfast", "After Breakfast", "Before Lunch", "After Lunch"], id: \.self) { option in
-                                Button(option) {
+                            ForEach(["Before Breakfast", "After Breakfast", "Before Lunch", "After Lunch", "Before Dinner", "After Dinner"], id: \.self) { option in
+                                Button(action: {
                                     selectedFoodOption = selectedFoodOption == option ? nil : option
+                                }) {
+                                    Text(option)
+                                        .padding()
+                                        .foregroundColor(.black)
+                                        .background(selectedFoodOption == option ? Color.gray.opacity(0.4) : Color.gray.opacity(0.1))
+                                        .cornerRadius(8)
                                 }
-                                .padding()
-                                .background(selectedFoodOption == option ? Color.blue : Color.gray.opacity(0.1))
-                                .cornerRadius(8)
                             }
                         }
                     }
@@ -130,9 +160,15 @@ struct PlanView: View {
                     Text("Additional details")
                         .font(.custom("RedditSans-Regular", size: 16))
                     TextEditor(text: $additionalDetails)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
+                        .padding(10)
+                        .frame(minHeight: 150)
+                        .background(Color.white)
                         .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)  // Thin gray border
+                        )
+                        .foregroundColor(.black)
                 }
 
                 // Error message
@@ -142,13 +178,14 @@ struct PlanView: View {
                         .font(.caption)
                 }
 
-                // Done Button
+                // Done Button (Full Width)
                 Button(action: validateAndSubmit) {
                     Text("Done")
                         .font(.headline)
                         .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(Color(red: 0, green: 0.48, blue: 0.60))
                         .cornerRadius(8)
                 }
             }
@@ -161,31 +198,27 @@ struct PlanView: View {
             showErrorMessage = true
             return
         }
-
         showErrorMessage = false
+        print("Plan: \(pillName), \(pillAmount) pills, \(duration) days, \(howOften)")
 
-        // Prepare pill data
+        // Call the API to save the pill data to the backend
         let pillData: [String: Any] = [
             "pillName": pillName,
             "amount": Int(pillAmount) ?? 0,
             "duration": Int(duration) ?? 0,
             "howOften": howOften,
-            "specificTime": dateFormatter.string(from: specificTime),
+            "specificTime": specificTime.description,
             "foodInstruction": selectedFoodOption ?? "",
             "notificationBefore": notificationBefore,
             "additionalDetails": additionalDetails
         ]
 
-        // Fetch UID from Firebase Auth
-        if let uid = Auth.auth().currentUser?.uid {
-            sendPillDataToBackend(uid: uid, pillData: pillData)
-        } else {
-            print("Error: User is not authenticated.")
-        }
+        savePillDataToBackend(pillData)
     }
 
-    private func sendPillDataToBackend(uid: String, pillData: [String: Any]) {
-        guard let url = URL(string: "http://localhost:3000/users/\(uid)/pills") else {
+    /// Function to call backend API and save the plan
+    private func savePillDataToBackend(_ pillData: [String: Any]) {
+        guard let url = URL(string: "http://localhost:3000/users/<user-uid>/pills") else {
             print("Invalid URL")
             return
         }
@@ -194,32 +227,19 @@ struct PlanView: View {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: pillData, options: [])
-            request.httpBody = jsonData
-        } catch {
-            print("Failed to serialize JSON: \(error)")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: pillData, options: []) else {
+            print("Error encoding data")
             return
         }
+        request.httpBody = httpBody
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error sending pill data: \(error)")
+                print("Error saving pill data: \(error)")
                 return
             }
-
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 {
-                print("Pill data successfully saved.")
-            } else {
-                print("Unexpected response from server.")
-            }
+            print("Pill data saved successfully.")
         }.resume()
-    }
-
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        return formatter
     }
 }
 
