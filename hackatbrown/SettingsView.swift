@@ -15,12 +15,27 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 10) {
-                // Custom Title
-                Text("Settings")
-                    .font(.custom("RedditSans-Bold", size: 28))
-                    .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                    .padding(.top, 10)
-                    .padding(.horizontal)
+                // Title and Edit Button
+                HStack {
+                    Text("Settings")
+                        .font(.custom("RedditSans-Bold", size: 28))
+                        .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        if isEditing {
+                            updateUser()
+                        }
+                        isEditing.toggle()
+                    }) {
+                        Text(isEditing ? "Done" : "Edit")
+                            .font(.custom("RedditSans-Regular", size: 18))
+                            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                    }
+                }
+                .padding(.top, 10)
+                .padding(.horizontal)
                 
                 Form {
                     // User Information Section
@@ -69,32 +84,21 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    
-                    // Log Out Section
-                    Section {
-                        Button(action: { authViewModel.signOut() }) {
-                            Text("Log Out")
-                                .font(.custom("RedditSans-Bold", size: 16))
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.red)
-                                .cornerRadius(8)
-                        }
-                    }
                 }
+                
+                // Log Out Button
+                Button(action: { authViewModel.signOut() }) {
+                    Text("Log Out")
+                        .font(.custom("RedditSans-Bold", size: 18))
+                        .foregroundColor(.red)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                }
+                .padding(.horizontal)
+                
+                Spacer()
             }
             .navigationBarHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(isEditing ? "Done" : "Edit") {
-                        if isEditing {
-                            updateUser()
-                        }
-                        isEditing.toggle()
-                    }
-                }
-            }
             .onAppear {
                 loadUserInfo()
             }
