@@ -201,7 +201,7 @@ struct HomeView: View {
                         } label: {
                             Image(systemName: "calendar")
                                 .font(.title2)
-                                .foregroundColor(.blue)
+                                .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
                         }
                     }
                     .padding(.horizontal)

@@ -1,113 +1,161 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel  // Access the auth state
-
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
     @State private var isEditing = false
-
+    
+    // Allergy management
+    @State private var allergies: [String] = []
+    @State private var newAllergy: String = ""
+    
     var body: some View {
-        VStack(spacing: 20) {
-            HStack {
-                Spacer()
-                Button(action: { isEditing.toggle() }) {
-                    Text(isEditing ? "Done" : "Edit")
-                        .font(.headline)
-                        .foregroundColor(.blue)
+        NavigationView {
+            VStack(alignment: .leading, spacing: 10) {
+                // Custom Title
+                Text("Settings")
+                    .font(.custom("RedditSans-Bold", size: 28))
+                    .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                    .padding(.top, 10)
+                    .padding(.horizontal)
+                
+                Form {
+                    // User Information Section
+                    Section(header: sectionHeader("User Information")) {
+                        userInfoRow(label: "First Name:", text: $firstName)
+                        userInfoRow(label: "Last Name:", text: $lastName)
+                        nonEditableInfoRow(label: "Email:", value: email)
+                    }
+                    
+                    // Allergies Section
+                    Section(header: sectionHeader("Allergies")) {
+                        if allergies.isEmpty {
+                            Text("No allergies. Press Edit to add allergies.")
+                                .font(.custom("RedditSans-Regular", size: 16))
+                                .foregroundColor(.gray)
+                        } else {
+                            ForEach(allergies.indices, id: \.self) { index in
+                                HStack {
+                                    TextField("Enter allergy", text: Binding(
+                                        get: { allergies[index] },
+                                        set: { allergies[index] = $0 }
+                                    ))
+                                    .font(.custom("RedditSans-Regular", size: 16))
+                                    .foregroundColor(.black)
+                                    
+                                    if isEditing {
+                                        Button(action: {
+                                            removeAllergy(at: index)
+                                        }) {
+                                            Image(systemName: "minus.circle.fill")
+                                                .foregroundColor(.red)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if isEditing {
+                            HStack {
+                                TextField("Add new allergy", text: $newAllergy)
+                                    .font(.custom("RedditSans-Regular", size: 16))
+                                Button(action: addAllergy) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Log Out Section
+                    Section {
+                        Button(action: { authViewModel.signOut() }) {
+                            Text("Log Out")
+                                .font(.custom("RedditSans-Bold", size: 16))
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.red)
+                                .cornerRadius(8)
+                        }
+                    }
                 }
             }
-            .padding(.horizontal)
-
-            // Profile Picture Section
-            VStack {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(.gray)
-
-                Text("Change profile picture")
-                    .font(.footnote)
-                    .foregroundColor(.blue)
-            }
-
-            VStack(alignment: .leading, spacing: 12) {
-                // First Name
-                VStack(alignment: .leading) {
-                    Text("First Name")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                    TextField("Enter first name", text: $firstName)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                        .disabled(!isEditing)
-                }
-
-                // Last Name
-                VStack(alignment: .leading) {
-                    Text("Last Name")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                    TextField("Enter last name", text: $lastName)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                        .disabled(!isEditing)
-                }
-
-                // Email (non-editable)
-                VStack(alignment: .leading) {
-                    Text("Email address")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                    TextField("Email", text: $email)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                        .disabled(true)
+            .navigationBarHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(isEditing ? "Done" : "Edit") {
+                        if isEditing {
+                            updateUser()
+                        }
+                        isEditing.toggle()
+                    }
                 }
             }
-            .padding()
-
-            if isEditing {
-                Button(action: updateUser) {
-                    Text("Save Changes")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                }
-                .padding(.horizontal)
+            .onAppear {
+                loadUserInfo()
             }
-
-            Spacer()
-
-            Button(action: { authViewModel.signOut() }) {
-                Text("Log Out")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red)
-                    .cornerRadius(8)
-            }
-            .padding()
         }
-        .onAppear {
-            loadUserInfo()
-        }
-        .padding()
     }
-
+    
+    // MARK: - Helper Views
+    
+    private func userInfoRow(label: String, text: Binding<String>) -> some View {
+        HStack {
+            Text(label)
+                .font(.custom("RedditSans-Regular", size: 16))
+            Spacer()
+            if isEditing {
+                TextField("Enter \(label.lowercased())", text: text)
+                    .multilineTextAlignment(.trailing)
+                    .font(.custom("RedditSans-Regular", size: 16))
+            } else {
+                Text(text.wrappedValue)
+                    .font(.custom("RedditSans-Regular", size: 16))
+                    .foregroundColor(.gray)
+            }
+        }
+    }
+    
+    private func nonEditableInfoRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label)
+                .font(.custom("RedditSans-Regular", size: 16))
+            Spacer()
+            Text(value)
+                .font(.custom("RedditSans-Regular", size: 16))
+                .foregroundColor(.gray)
+        }
+    }
+    
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.custom("RedditSans-Bold", size: 18))
+            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+    }
+    
+    // MARK: - Logic Methods
+    
     private func loadUserInfo() {
         email = authViewModel.currentUserEmail
-        // Optionally, fetch first and last name from backend
+        // Optionally fetch first and last name and allergies from the backend if needed.
     }
-
+    
+    private func addAllergy() {
+        guard !newAllergy.isEmpty else { return }
+        allergies.append(newAllergy)
+        newAllergy = ""
+        // Optionally save updated allergies to the backend.
+    }
+    
+    private func removeAllergy(at index: Int) {
+        allergies.remove(at: index)
+        // Optionally save updated allergies to the backend.
+    }
+    
     private func updateUser() {
         guard !firstName.isEmpty, !lastName.isEmpty else {
             print("First and last names cannot be empty.")
@@ -117,7 +165,8 @@ struct SettingsView: View {
         let userUpdateData: [String: Any] = [
             "uid": authViewModel.currentUserUID,
             "email": email,
-            "name": "\(firstName) \(lastName)"
+            "name": "\(firstName) \(lastName)",
+            "allergies": allergies
         ]
 
         guard let url = URL(string: "http://localhost:3000/users") else {
@@ -144,8 +193,4 @@ struct SettingsView: View {
             print("User updated successfully.")
         }.resume()
     }
-}
-
-#Preview {
-    SettingsView().environmentObject(AuthViewModel())
 }

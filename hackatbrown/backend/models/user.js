@@ -16,14 +16,15 @@ const pillSchema = new mongoose.Schema({
     foodInstruction: { type: String },
     notificationBefore: { type: String },
     additionalDetails: { type: String },
-    intakeLogs: [intakeLogSchema]   // New field for intake logs
+    intakeLogs: [intakeLogSchema]
 }, { timestamps: true });
 
 const userSchema = new mongoose.Schema({
     uid: { type: String, required: true, unique: true },
     email: { type: String, required: true },
     name: { type: String },
-    pills: [pillSchema]
+    pills: [pillSchema],
+    allergies: [{ type: String }]
 }, { timestamps: true });
 
 module.exports = mongoose.models.User || mongoose.model('User', userSchema);
