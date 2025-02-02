@@ -1,14 +1,89 @@
 import SwiftUI
 
+// MARK: - Pill Model
+struct Pill: Codable, Identifiable {
+    let id: String
+    let pillName: String
+    let amount: Int
+    let duration: Int           // Number of days the pill is scheduled
+    let howOften: String
+    let specificTime: String?
+    let foodInstruction: String?
+    let notificationBefore: String?
+    let additionalDetails: String?
+    let createdAt: Date?        // Provided by timestamps
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case pillName, amount, duration, howOften, specificTime, foodInstruction, notificationBefore, additionalDetails, createdAt
+    }
+}
+
+// MARK: - PillViewModel
+class PillViewModel: ObservableObject {
+    @Published var pills: [Pill] = []
+    
+    // Update this to your API base URL and the uid of the current user.
+    let baseURL = "http://localhost:3000"
+    let uid = "y3du4q4Ux0WhONouB7azVhKHPNR2"
+    
+    func fetchPills() async {
+        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills") else {
+            print("Invalid URL")
+            return
+        }
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            if let httpResp = response as? HTTPURLResponse {
+                print("Status code: \(httpResp.statusCode)")
+                if httpResp.statusCode != 200 {
+                    if let responseBody = String(data: data, encoding: .utf8) {
+                        print("Response body: \(responseBody)")
+                    }
+                    print("Server error")
+                    return
+                }
+            }
+            
+            let decoder = JSONDecoder()
+            // Use a custom date decoding strategy to support fractional seconds.
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            decoder.dateDecodingStrategy = .custom { decoder in
+                let container = try decoder.singleValueContainer()
+                let dateStr = try container.decode(String.self)
+                if let date = formatter.date(from: dateStr) {
+                    return date
+                }
+                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateStr)")
+            }
+            
+            let pills = try decoder.decode([Pill].self, from: data)
+            
+            await MainActor.run {
+                self.pills = pills
+            }
+        } catch {
+            print("Error fetching pills: \(error.localizedDescription)")
+        }
+    }
+}
+
+// MARK: - HomeView
 struct HomeView: View {
-    @State private var currentDate = Date()         // Today’s date
-    @State private var selectedDate = Date()          // Currently highlighted date
+    // For testing purposes, set currentDate and selectedDate to February 1, 2025.
+    @State private var currentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 1)) ?? Date()
+    @State private var selectedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 1)) ?? Date()
+    
     @State private var weekOffset = 0                 // Current week page offset
     @State private var showCalendar = false           // Controls calendar sheet display
-
+    
+    @StateObject private var pillVM = PillViewModel()   // ViewModel for pills
+    
     var body: some View {
-        ScrollView {  // Wrap everything in a vertical scroll view so that content can scroll on smaller screens.
-            VStack(spacing: 12) {  // Reduced overall spacing
+        ScrollView {
+            VStack(spacing: 12) {
                 // Top header with greeting and logo
                 HStack {
                     VStack(alignment: .leading) {
@@ -43,7 +118,7 @@ struct HomeView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top, 6) // Reduced top padding
+                .padding(.top, 6)
                 
                 // Week swiping: each page represents a full week.
                 TabView(selection: $weekOffset) {
@@ -53,9 +128,8 @@ struct HomeView: View {
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(height: 110) // Reduced height for less vertical space between header and week selector.
+                .frame(height: 110)
                 .onChange(of: weekOffset) { newOffset in
-                    // When swiping to a new week, set the highlighted date to the first day of that week.
                     let newWeekStart = weekStart(for: newOffset)
                     selectedDate = newWeekStart
                 }
@@ -65,15 +139,18 @@ struct HomeView: View {
                     .frame(width: 150, height: 150)
                     .padding(.top)
                 
-                // Extra spacing between the circle and the medication cards.
                 Spacer().frame(height: 20)
                 
-                // Medication list with added horizontal padding.
+                // Medication list: show pills filtered for the selected date.
                 VStack(spacing: 10) {
-                    MedicationItemView(name: "Oxycodon", time: "8:00 AM", dose: "2 pills", period: "Morning")
-                    MedicationItemView(name: "Lipitor", time: "10:00 AM", dose: "1 pill", period: "After Breakfast")
-                    MedicationItemView(name: "Omega 3", time: "12:00 AM", dose: "3 pills", period: "Before Lunch")
-                    MedicationItemView(name: "Naloxene", time: "2:00 PM", dose: "1 pill", period: "Afternoon")
+                    ForEach(pillsForSelectedDate(), id: \.id) { pill in
+                        MedicationItemView(
+                            name: pill.pillName,
+                            time: pill.specificTime ?? "N/A",
+                            dose: "\(pill.amount) \(pill.howOften)",
+                            period: pill.foodInstruction ?? ""
+                        )
+                    }
                 }
                 .padding(.horizontal)
                 
@@ -84,11 +161,9 @@ struct HomeView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .navigationBarHidden(true)
-        // Show the calendar sheet when toggled.
         .sheet(isPresented: $showCalendar) {
             CalendarSheet(selectedDate: $selectedDate, showCalendar: $showCalendar)
         }
-        // If the user taps a day that isn’t in the current week, update the weekOffset accordingly.
         .onChange(of: selectedDate) { newDate in
             let calendar = Calendar.current
             if let newWeekStart = calendar.dateInterval(of: .weekOfYear, for: newDate)?.start {
@@ -99,6 +174,9 @@ struct HomeView: View {
                     }
                 }
             }
+        }
+        .task {
+            await pillVM.fetchPills()
         }
     }
     
@@ -115,9 +193,36 @@ struct HomeView: View {
         formatter.dateFormat = "MMMM d, yyyy"
         return formatter.string(from: date)
     }
+    
+    // Filter pills to include only those that should be taken on the selected day.
+    private func pillsForSelectedDate() -> [Pill] {
+        let calendar = Calendar.current
+        let selectedStart = calendar.startOfDay(for: selectedDate)
+        return pillVM.pills.filter { pill in
+            guard let createdAt = pill.createdAt else { return false }
+            
+            let pillStart = calendar.startOfDay(for: createdAt)
+            guard let rawEnd = calendar.date(byAdding: .day, value: pill.duration, to: createdAt) else { return false }
+            let pillEnd = calendar.startOfDay(for: rawEnd)
+            
+            guard selectedStart >= pillStart && selectedStart <= pillEnd else {
+                return false
+            }
+            
+            if pill.howOften.lowercased() == "daily" {
+                return true
+            } else if pill.howOften.lowercased() == "weekly" {
+                let pillWeekday = calendar.component(.weekday, from: pillStart)
+                let selectedWeekday = calendar.component(.weekday, from: selectedStart)
+                return pillWeekday == selectedWeekday
+            } else {
+                return true
+            }
+        }
+    }
 }
 
-// A sheet with a graphical DatePicker so users can jump to a specific date.
+// MARK: - CalendarSheet
 struct CalendarSheet: View {
     @Binding var selectedDate: Date
     @Binding var showCalendar: Bool
@@ -125,7 +230,6 @@ struct CalendarSheet: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Smaller "Today" button placed at the top for easy access.
                 HStack {
                     Spacer()
                     Button(action: {
@@ -138,7 +242,7 @@ struct CalendarSheet: View {
                             .foregroundColor(.blue)
                             .cornerRadius(8)
                     }
-                    .padding(.trailing, 16) // Aligns with the date picker visually
+                    .padding(.trailing, 16)
                 }
                 
                 DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
@@ -159,10 +263,7 @@ struct CalendarSheet: View {
     }
 }
 
-
-// WeekView displays the seven days for a given week offset.
-// The selected day now uses a filled background with a transparent blue (opacity 0.3).
-// We also increased the spacing between the day label and number.
+// MARK: - WeekView
 struct WeekView: View {
     let weekOffset: Int
     @Binding var selectedDate: Date
@@ -170,19 +271,19 @@ struct WeekView: View {
     var body: some View {
         HStack(spacing: 12) {
             ForEach(weekDates(for: weekOffset), id: \.self) { date in
-                VStack(spacing: 8) {  // Increased spacing between day label and number.
+                VStack(spacing: 8) {
                     Text(shortDayOfWeek(from: date))
                         .font(.custom("RedditSans-Regular", size: 14))
                         .foregroundColor(.gray)
                     Text(dayNumber(from: date))
                         .font(.custom("RedditSans-Bold", size: 16))
                         .foregroundColor(isSameDay(date1: date, date2: selectedDate) ? .white : .black)
-                        .padding(12)  // Padding inside the circle.
+                        .padding(12)
                         .background(isSameDay(date1: date, date2: selectedDate) ?
-                                    Color(red: 0, green: 0.48, blue: 0.60) :
+                                    Color(red: 0, green: 0.48, blue: 0.60).opacity(0.3) :
                                     Color.clear)
                         .clipShape(Circle())
-                        .frame(minWidth: 44, minHeight: 44) // Ensure a minimum size for alignment.
+                        .frame(minWidth: 44, minHeight: 44)
                         .onTapGesture {
                             selectedDate = date
                         }
@@ -192,7 +293,6 @@ struct WeekView: View {
         .padding(.horizontal)
     }
     
-    // Generate the dates for the week using the provided week offset.
     private func weekDates(for offset: Int) -> [Date] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -200,27 +300,24 @@ struct WeekView: View {
         return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: startOfWeek) }
     }
     
-    // Returns the abbreviated day of the week (e.g., "MON").
     private func shortDayOfWeek(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return formatter.string(from: date).uppercased()
     }
     
-    // Returns the day number from the date.
     private func dayNumber(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "d"
         return formatter.string(from: date)
     }
     
-    // Checks whether two dates are the same day.
     private func isSameDay(date1: Date, date2: Date) -> Bool {
         Calendar.current.isDate(date1, inSameDayAs: date2)
     }
 }
 
-// Circular progress view remains unchanged.
+// MARK: - CircularProgressView
 struct CircularProgressView: View {
     var progress: Double
 
@@ -239,7 +336,7 @@ struct CircularProgressView: View {
     }
 }
 
-// Medication item view remains unchanged except for added horizontal padding.
+// MARK: - MedicationItemView
 struct MedicationItemView: View {
     var name: String
     var time: String
@@ -265,8 +362,8 @@ struct MedicationItemView: View {
             Image(systemName: "chevron.right")
                 .foregroundColor(.gray)
         }
-        .padding() // Existing padding.
-        .padding(.horizontal) // Added extra side padding.
+        .padding()
+        .padding(.horizontal)
         .background(Color.green.opacity(0.1))
         .cornerRadius(8)
     }
