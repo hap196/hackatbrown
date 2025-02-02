@@ -655,6 +655,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = hackatbrown/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses the camera to scan AR markers and provide augmented reality experiences.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "This app uses reminders for pill tracking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -687,6 +688,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = hackatbrown/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses the camera to scan AR markers and provide augmented reality experiences.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "This app uses reminders for pill tracking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

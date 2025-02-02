@@ -1,7 +1,10 @@
 import SwiftUI
+import EventKit
 
 struct PlanView: View {
     @Binding var selectedTab: Int  // Binding passed from the parent TabView
+    
+    @Environment(\.dismiss) private var dismiss  // To dismiss the view
     
     @State private var pillName: String = ""
     @State private var pillAmount: String = ""
@@ -45,7 +48,6 @@ struct PlanView: View {
                     Text("Amount & Duration *")
                         .font(.custom("RedditSans-Regular", size: 16))
                     HStack(spacing: 10) {
-                        // Pill amount input with reduced width
                         HStack {
                             Image(systemName: "pills")
                                 .foregroundColor(.gray)
@@ -57,7 +59,6 @@ struct PlanView: View {
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
 
-                        // Duration input with more space
                         HStack {
                             Image(systemName: "calendar")
                                 .foregroundColor(.gray)
@@ -104,7 +105,6 @@ struct PlanView: View {
                     Text("Specific time & Notification")
                         .font(.custom("RedditSans-Regular", size: 16))
                     
-                    // Time input
                     HStack {
                         Image(systemName: "clock")
                             .foregroundColor(.gray)
@@ -116,7 +116,6 @@ struct PlanView: View {
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
                     
-                    // Notification dropdown
                     Menu {
                         ForEach(notificationOptions, id: \.self) { option in
                             Button(option) {
@@ -222,7 +221,11 @@ struct PlanView: View {
         ]
         
         savePillDataToBackend(pillData)
-        // Update the tab selection to switch to the Home tab (index 0).
+        
+        // Create a reminder in Apple Reminders
+        createCalendarReminder(for: pillData)
+        
+        // Switch tab back to Home (index 0)
         selectedTab = 0
     }
     
@@ -231,10 +234,6 @@ struct PlanView: View {
             print("User uid not available")
             return
         }
-//        guard let url = URL(string: "http://localhost:3000/users/\(uid)/pills") else {
-//            print("Invalid URL")
-//            return
-//        }
         guard let url = URL(string: "https://hackatbrown.onrender.com/users/\(uid)/pills") else {
             print("Invalid URL")
             return
@@ -258,6 +257,65 @@ struct PlanView: View {
             print("Pill data saved successfully.")
         }.resume()
     }
+    
+    // MARK: - Create Reminder in Apple Reminders Using EventKit
+    private func createCalendarReminder(for pillData: [String: Any]) {
+        let eventStore = EKEventStore()
+        eventStore.requestAccess(to: .reminder) { granted, error in
+            if granted {
+                let reminder = EKReminder(eventStore: eventStore)
+                reminder.title = "Take \(pillData["pillName"] as? String ?? "Medication")"
+                let amount = pillData["amount"] as? Int ?? 1
+                let duration = pillData["duration"] as? Int ?? 1
+                reminder.notes = "Reminder: Take \(amount) pill(s) for \(duration) days.\nAdditional details: \(pillData["additionalDetails"] as? String ?? "")"
+                
+                // Set due date: combine today's date with the specific time.
+                let calendar = Calendar.current
+                let now = Date()
+                var components = calendar.dateComponents([.year, .month, .day], from: now)
+                
+                let timeFormatter = DateFormatter()
+                timeFormatter.dateFormat = "hh:mm a"
+                if let specificTimeString = pillData["specificTime"] as? String,
+                   let timeDate = timeFormatter.date(from: specificTimeString) {
+                    let timeComponents = calendar.dateComponents([.hour, .minute], from: timeDate)
+                    components.hour = timeComponents.hour
+                    components.minute = timeComponents.minute
+                }
+                
+                if let dueDate = calendar.date(from: components) {
+                    reminder.dueDateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: dueDate)
+                    
+                    // Create an alarm based on the notificationBefore value.
+                    if let notif = pillData["notificationBefore"] as? String, notif != "No Notification" {
+                        var offsetMinutes: Int = 0
+                        if notif.lowercased().contains("minute") {
+                            if let number = Int(notif.components(separatedBy: " ").first ?? "") {
+                                offsetMinutes = number
+                            }
+                        } else if notif.lowercased().contains("hour") {
+                            if let number = Int(notif.components(separatedBy: " ").first ?? "") {
+                                offsetMinutes = number * 60
+                            }
+                        }
+                        // EKAlarm expects a relative offset in seconds (negative for before the due date).
+                        let alarm = EKAlarm(relativeOffset: TimeInterval(-offsetMinutes * 60))
+                        reminder.addAlarm(alarm)
+                    }
+                }
+                
+                reminder.calendar = eventStore.defaultCalendarForNewReminders()
+                do {
+                    try eventStore.save(reminder, commit: true)
+                    print("Reminder saved successfully in Apple Reminders.")
+                } catch {
+                    print("Error saving reminder: \(error.localizedDescription)")
+                }
+            } else {
+                print("Access to reminders was not granted: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
 }
 
 struct CustomRecurrenceView: View {
@@ -267,7 +325,7 @@ struct CustomRecurrenceView: View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Custom Recurrence")
                 .font(.headline)
-
+            
             HStack {
                 Text("Repeat every")
                 TextField("1", text: .constant("1"))
@@ -281,7 +339,7 @@ struct CustomRecurrenceView: View {
                     Text("Week")
                 }
             }
-
+            
             Button("Done") {
                 showSheet = false
             }
@@ -293,7 +351,6 @@ struct CustomRecurrenceView: View {
 
 #Preview {
     NavigationView {
-        // In your preview, we pass a constant binding (e.g., index 2).
         PlanView(selectedTab: .constant(2))
     }
 }

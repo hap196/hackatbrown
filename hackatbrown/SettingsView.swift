@@ -42,7 +42,7 @@ struct SettingsView: View {
                     Section(header: sectionHeader("User Information")) {
                         userInfoRow(label: "First Name:", text: $firstName)
                         userInfoRow(label: "Last Name:", text: $lastName)
-                        nonEditableInfoRow(label: "Email:", value: email)
+//                        nonEditableInfoRow(label: "Email:", value: email)
                     }
                     
                     // Allergies Section
