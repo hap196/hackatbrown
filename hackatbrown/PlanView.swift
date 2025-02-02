@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PlanView: View {
+    @Binding var selectedTab: Int  // Binding passed from the parent TabView
+    
     @State private var pillName: String = ""
     @State private var pillAmount: String = ""
     @State private var duration: String = ""
@@ -51,7 +53,7 @@ struct PlanView: View {
                                 .keyboardType(.numberPad)
                         }
                         .padding()
-                        .frame(maxWidth: 140)  // Adjust width for better fit
+                        .frame(maxWidth: 140)
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
 
@@ -101,19 +103,19 @@ struct PlanView: View {
                 VStack(alignment: .leading) {
                     Text("Specific time & Notification")
                         .font(.custom("RedditSans-Regular", size: 16))
-
+                    
                     // Time input
                     HStack {
                         Image(systemName: "clock")
                             .foregroundColor(.gray)
                         DatePicker("", selection: $specificTime, displayedComponents: .hourAndMinute)
                             .labelsHidden()
-                            .background(Color.clear)  // Transparent background
+                            .background(Color.clear)
                     }
                     .padding()
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
-
+                    
                     // Notification dropdown
                     Menu {
                         ForEach(notificationOptions, id: \.self) { option in
@@ -133,7 +135,7 @@ struct PlanView: View {
                         .cornerRadius(8)
                     }
                 }
-
+                
                 // Food & Pills Section
                 VStack(alignment: .leading) {
                     Text("Food & Pills")
@@ -154,7 +156,7 @@ struct PlanView: View {
                         }
                     }
                 }
-
+                
                 // Additional Details Section
                 VStack(alignment: .leading) {
                     Text("Additional details")
@@ -166,18 +168,17 @@ struct PlanView: View {
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)  // Thin gray border
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                         )
                         .foregroundColor(.black)
                 }
-
-                // Error message
+                
                 if showErrorMessage {
                     Text("Please fill in all required fields.")
                         .foregroundColor(.red)
                         .font(.caption)
                 }
-
+                
                 // Done Button (Full Width)
                 Button(action: validateAndSubmit) {
                     Text("Done")
@@ -191,8 +192,13 @@ struct PlanView: View {
             }
             .padding()
         }
+        .navigationDestination(isPresented: $navigateToHome) {
+            HomeView()
+        }
     }
-
+    
+    @State private var navigateToHome: Bool = false
+    
     private func validateAndSubmit() {
         guard !pillName.isEmpty, !pillAmount.isEmpty, !duration.isEmpty else {
             showErrorMessage = true
@@ -200,39 +206,46 @@ struct PlanView: View {
         }
         showErrorMessage = false
         print("Plan: \(pillName), \(pillAmount) pills, \(duration) days, \(howOften)")
-
-        // Call the API to save the pill data to the backend
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "hh:mm a"  // e.g., "08:31 AM"
+        
         let pillData: [String: Any] = [
             "pillName": pillName,
             "amount": Int(pillAmount) ?? 0,
             "duration": Int(duration) ?? 0,
             "howOften": howOften,
-            "specificTime": specificTime.description,
+            "specificTime": timeFormatter.string(from: specificTime),
             "foodInstruction": selectedFoodOption ?? "",
             "notificationBefore": notificationBefore,
             "additionalDetails": additionalDetails
         ]
-
+        
         savePillDataToBackend(pillData)
+        // Update the tab selection to switch to the Home tab (index 0).
+        selectedTab = 0
     }
-
-    /// Function to call backend API and save the plan
+    
     private func savePillDataToBackend(_ pillData: [String: Any]) {
-        guard let url = URL(string: "http://localhost:3000/users/<user-uid>/pills") else {
+        guard let uid = UserDefaults.standard.string(forKey: "uid") else {
+            print("User uid not available")
+            return
+        }
+        guard let url = URL(string: "http://localhost:3000/users/\(uid)/pills") else {
             print("Invalid URL")
             return
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         guard let httpBody = try? JSONSerialization.data(withJSONObject: pillData, options: []) else {
             print("Error encoding data")
             return
         }
         request.httpBody = httpBody
-
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("Error saving pill data: \(error)")
@@ -256,23 +269,12 @@ struct CustomRecurrenceView: View {
                 TextField("1", text: .constant("1"))
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 50)
-
                 Menu {
                     Button("Day") { }
                     Button("Week") { }
                     Button("Month") { }
                 } label: {
                     Text("Week")
-                }
-            }
-
-            HStack {
-                Text("Repeat on")
-                ForEach(["S", "M", "T", "W", "T", "F", "S"], id: \.self) { day in
-                    Text(day)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
                 }
             }
 
@@ -286,5 +288,8 @@ struct CustomRecurrenceView: View {
 }
 
 #Preview {
-    PlanView()
+    NavigationView {
+        // In your preview, we pass a constant binding (e.g., index 2).
+        PlanView(selectedTab: .constant(2))
+    }
 }

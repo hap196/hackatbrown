@@ -63,34 +63,37 @@ struct AlertsView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Header
-                Text("Alerts")
-                    .font(.custom("RedditSans-Bold", size: 28))
-                    .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                    .padding(.top, 10)
-                    .padding(.horizontal)
-                
-                // This Week Section
-                SectionView(sectionTitle: "This Week", alerts: thisWeekAlerts, selectedAlert: $selectedAlert)
-                
-                // Past Section
-                SectionView(sectionTitle: "Past", alerts: pastAlerts, selectedAlert: $selectedAlert)
-                
-                Spacer()
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Header
+                    Text("Alerts")
+                        .font(.custom("RedditSans-Bold", size: 28))
+                        .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                    
+                    // This Week Section
+                    SectionView(sectionTitle: "This Week", alerts: thisWeekAlerts, selectedAlert: $selectedAlert)
+                    
+                    // Past Section
+                    SectionView(sectionTitle: "Past", alerts: pastAlerts, selectedAlert: $selectedAlert)
+                    
+                    Spacer()
+                }
+                .padding(.bottom)
             }
-            .padding(.bottom)
-        }
-        .background(Color.white)
-        .sheet(item: $selectedAlert) { alert in
-            AlertDetailView(alert: alert)
-        }
-        .task {
-            await pillVM.fetchPills()
+            .background(Color.white)
+            .sheet(item: $selectedAlert) { alert in
+                AlertDetailView(alert: alert)
+            }
+            .task {
+                await pillVM.fetchPills()
+            }
         }
     }
 }
+
 
 // Component for displaying a section of alerts.
 struct SectionView: View {
@@ -105,12 +108,19 @@ struct SectionView: View {
                 .foregroundColor(Color(red: 0.13, green: 0.13, blue: 0.18))
                 .padding(.horizontal)
             
-            ForEach(alerts) { alert in
-                Button {
-                    selectedAlert = alert  // Open the detail view
-                } label: {
-                    AlertRowView(alert: alert)
-                        .padding(.horizontal)
+            if alerts.isEmpty {
+                Text("No alerts")
+                    .font(.custom("RedditSans-Regular", size: 16))
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+            } else {
+                ForEach(alerts) { alert in
+                    Button {
+                        selectedAlert = alert  // Open the detail view
+                    } label: {
+                        AlertRowView(alert: alert)
+                            .padding(.horizontal)
+                    }
                 }
             }
             
@@ -119,6 +129,7 @@ struct SectionView: View {
         }
     }
 }
+
 
 // A view model that simulates fetching an explanation and severity rating via OpenAI API.
 class AlertDetailViewModel: ObservableObject {

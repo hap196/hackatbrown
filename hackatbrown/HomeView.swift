@@ -150,9 +150,9 @@ class PillViewModel: ObservableObject {
 
 // MARK: - HomeView
 struct HomeView: View {
-    // For testing, set currentDate to Feb 1, 2025.
-    @State private var currentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 1)) ?? Date()
-    @State private var selectedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 1)) ?? Date()
+    // For testing, set currentDate to Feb 2, 2025.
+    @State private var currentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 2)) ?? Date()
+    @State private var selectedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 2)) ?? Date()
     @State private var weekOffset = 0
     @State private var showCalendar = false
     @State private var selectedPill: Pill? = nil
@@ -160,19 +160,19 @@ struct HomeView: View {
     @StateObject private var pillVM = PillViewModel()
     
     private var dailyProgress: Double {
-            let pills = pillsForSelectedDate()
-            let totalRequired = pills.reduce(0) { $0 + $1.amount }
-            let totalLogged = pills.reduce(0) { $0 + getLoggedAmount(for: $1, on: selectedDate) }
-            guard totalRequired > 0 else { return 0 }
-            let progress = Double(totalLogged) / Double(totalRequired)
-            return min(progress, 1.0)
-        }
+        let pills = pillsForSelectedDate()
+        let totalRequired = pills.reduce(0) { $0 + $1.amount }
+        let totalLogged = pills.reduce(0) { $0 + getLoggedAmount(for: $1, on: selectedDate) }
+        guard totalRequired > 0 else { return 0 }
+        let progress = Double(totalLogged) / Double(totalRequired)
+        return min(progress, 1.0)
+    }
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 12) {
-                    // Header and Calendar Button (same as before)
+                    // Header and Calendar Button.
                     HStack {
                         VStack(alignment: .leading) {
                             Text("Hello,")
@@ -221,36 +221,46 @@ struct HomeView: View {
                         selectedDate = newWeekStart
                     }
                     
-                    // Updated Circular Progress View:
+                    // Circular Progress View.
                     CircularProgressView(progress: dailyProgress)
                         .frame(width: 150, height: 150)
                         .padding(.top)
-                                       
+                    
                     Spacer().frame(height: 20)
                     
-                    // Medication list: each card now determines its background based on completion.
-                                        VStack(spacing: 10) {
-                                            ForEach(pillsForSelectedDate(), id: \.id) { pill in
-                                                let logged = getLoggedAmount(for: pill, on: selectedDate)
-                                                let completed = logged >= pill.amount
-                                                MedicationItemView(
-                                                    name: pill.pillName,
-                                                    time: pill.specificTime ?? "N/A",
-                                                    dose: "\(logged)/\(pill.amount)",
-                                                    period: pill.foodInstruction ?? "",
-                                                    completed: completed
-                                                )
-                                                .onTapGesture {
-                                                    selectedPill = pill
-                                                }
-                                            }
-                                        }
-                                        .padding(.horizontal)
-                                        
-                                        Spacer()
+                    // Medication list or placeholder message.
+                    if pillsForSelectedDate().isEmpty {
+                        Text("No medication plan added.\nPlease go to the Plan tab to add your medications.")
+                            .font(.custom("RedditSans-Regular", size: 16))
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                    } else {
+                        VStack(spacing: 10) {
+                            ForEach(pillsForSelectedDate(), id: \.id) { pill in
+                                let logged = getLoggedAmount(for: pill, on: selectedDate)
+                                let completed = logged >= pill.amount
+                                MedicationItemView(
+                                    name: pill.pillName,
+                                    time: pill.specificTime ?? "N/A",
+                                    dose: "\(logged)/\(pill.amount)",
+                                    period: pill.foodInstruction ?? "",
+                                    completed: completed
+                                )
+                                .onTapGesture {
+                                    selectedPill = pill
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    Spacer()
                 }
                 .padding(.top, 20)
                 .background(Color.white)
+                // Add extra bottom padding if needed
+                .padding(.bottom, 20)
             }
             .ignoresSafeArea(edges: .bottom)
             .navigationBarHidden(true)
@@ -289,7 +299,7 @@ struct HomeView: View {
         return formatter.string(from: date)
     }
     
-    // Filter pills as before.
+    // Filter pills for the selected day.
     private func pillsForSelectedDate() -> [Pill] {
         let calendar = Calendar.current
         let selectedStart = calendar.startOfDay(for: selectedDate)
@@ -311,7 +321,7 @@ struct HomeView: View {
         }
     }
     
-    // Helper to compute the logged intake for a pill on a given day.
+    // Compute the logged intake for a pill on a given day.
     private func getLoggedAmount(for pill: Pill, on date: Date) -> Int {
         let calendar = Calendar.current
         let dayStart = calendar.startOfDay(for: date)

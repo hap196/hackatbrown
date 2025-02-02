@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @State private var selectedTab: Int = 0
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {
                     VStack {
@@ -10,6 +11,7 @@ struct MainTabView: View {
                         Text("Home")
                     }
                 }
+                .tag(0)
             
             ScanView()
                 .tabItem {
@@ -18,14 +20,16 @@ struct MainTabView: View {
                         Text("Scan")
                     }
                 }
+                .tag(1)
             
-            PlanView()
+            PlanView(selectedTab: $selectedTab)
                 .tabItem {
                     VStack {
                         Image(systemName: "plus.circle.fill")
                         Text("Plan")
                     }
                 }
+                .tag(2)
             
             AlertsView()
                 .tabItem {
@@ -34,6 +38,7 @@ struct MainTabView: View {
                         Text("Alerts")
                     }
                 }
+                .tag(3)
             
             SettingsView()
                 .tabItem {
@@ -42,6 +47,7 @@ struct MainTabView: View {
                         Text("Settings")
                     }
                 }
+                .tag(4)
         }
         .accentColor(Color(red: 0.0, green: 0.48, blue: 0.60))  // Highlight color for selected tab
     }
