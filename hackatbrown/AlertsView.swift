@@ -13,21 +13,18 @@ struct AlertItem: Identifiable {
 struct AlertsView: View {
     @StateObject private var pillVM = PillViewModel()
     
-    // Compute all alerts from the intake logs on all pills.
+    // Compute all alerts from the intake logs on all pills, sorted by logDate descending.
     private var allAlerts: [AlertItem] {
         var alerts: [AlertItem] = []
         let calendar = Calendar.current
         
-        // Iterate through each pill.
         for pill in pillVM.pills {
-            // If there are no intakeLogs, skip.
             guard let logs = pill.intakeLogs, !logs.isEmpty else { continue }
             
-            // Group the intake logs by day (using the start of day).
+            // Group intake logs by day.
             let grouped = Dictionary(grouping: logs) { log in
                 calendar.startOfDay(for: log.date)
             }
-            // For each day, sum up the logged amount.
             for (day, logsForDay) in grouped {
                 let totalLogged = logsForDay.map { $0.amount }.reduce(0, +)
                 if totalLogged < pill.amount {
@@ -47,7 +44,7 @@ struct AlertsView: View {
                 }
             }
         }
-        return alerts
+        return alerts.sorted { $0.logDate > $1.logDate }
     }
     
     // Separate alerts into those in the current week and those in the past.
@@ -87,7 +84,7 @@ struct AlertsView: View {
     }
 }
 
-// A reusable component to display a section of alerts.
+// Component for displaying sections.
 struct SectionView: View {
     let sectionTitle: String
     let alerts: [AlertItem]
@@ -145,7 +142,6 @@ struct AlertRowView: View {
         .background(Color.white)
     }
     
-    // Helper function to format the alert date.
     private func dateString(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy"
