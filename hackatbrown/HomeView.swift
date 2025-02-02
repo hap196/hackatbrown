@@ -704,10 +704,10 @@ struct WeekView: View {
             ForEach(weekDates(for: weekOffset), id: \.self) { date in
                 VStack(spacing: 8) {
                     Text(shortDayOfWeek(from: date))
-                        .font(.custom("RedditSans-Regular", size: 14))
+                        .font(.custom("RedditSans-Regular", size: 12))
                         .foregroundColor(.gray)
                     Text(dayNumber(from: date))
-                        .font(.custom("RedditSans-Bold", size: 16))
+                        .font(.custom("RedditSans-Bold", size: 14))
                         .foregroundColor(isSameDay(date1: date, date2: selectedDate) ? .white : .black)
                         .padding(12)
                         .background(isSameDay(date1: date, date2: selectedDate) ?
