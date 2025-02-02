@@ -217,8 +217,6 @@ class AlertDetailViewModel: ObservableObject {
     
 }
 
-import SwiftUI
-
 struct AlertDetailView: View {
     let alert: AlertItem
     @StateObject private var viewModel = AlertDetailViewModel()
@@ -232,71 +230,85 @@ struct AlertDetailView: View {
                     .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
                     .multilineTextAlignment(.center)
                     .padding(.top, 20)
-
+                
                 // Dosage Information Section
-                VStack(spacing: 12) {
+                DetailCard {
                     InfoRowView(label: "Recommended Dosage:", value: "\(alert.recommendedDosage)")
+                    Divider()
                     InfoRowView(label: "Your Dosage:", value: "\(alert.yourDosage)")
                 }
-                .padding()
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(12)
+        
 
                 // Explanation Section
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Explanation")
-                        .font(.custom("RedditSans-Bold", size: 20))
-                        .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                    
-                    Text(viewModel.explanation.isEmpty ? "Loading explanation..." : viewModel.explanation)
-                        .font(.custom("RedditSans-Regular", size: 16))
-                        .foregroundColor(.gray)
-                        .padding(.top, 4)
+                DetailCard {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Explanation")
+                            .font(.custom("RedditSans-Bold", size: 16))
+                            .foregroundColor(.black)
+                        
+                        Text(viewModel.explanation.isEmpty ? "Loading explanation..." : viewModel.explanation)
+                            .font(.custom("RedditSans-Regular", size: 16))
+                            .foregroundColor(.gray)
+                            .fixedSize(horizontal: false, vertical: true)  // Allow multiline explanation
+                    }
                 }
-                .padding()
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(12)
 
                 // Severity Section
-                VStack(spacing: 10) {
-                    HStack {
-                        Text("Severity:")
-                            .font(.custom("RedditSans-Bold", size: 18))
-                        Spacer()
-                        Text("\(Int(viewModel.severity))/10")
-                            .font(.custom("RedditSans-Bold", size: 18))
-                            .foregroundColor(viewModel.severity > 7 ? .red : .gray)
+                DetailCard {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Text("Severity:")
+                                .font(.custom("RedditSans-Bold", size: 16))
+                            Spacer()
+                            Text("\(Int(viewModel.severity))/10")
+                                .font(.custom("RedditSans-Bold", size: 16))
+                                .foregroundColor(viewModel.severity > 7 ? .red : .gray)
+                        }
+                        ProgressView(value: viewModel.severity, total: 10)
+                            .progressViewStyle(LinearProgressViewStyle(tint: viewModel.severity > 7 ? .red : .green))
                     }
-                    
-                    ProgressView(value: viewModel.severity, total: 10)
-                        .progressViewStyle(LinearProgressViewStyle(tint: viewModel.severity > 7 ? .red : .green))
-                        .padding(.top, 4)
                 }
-                .padding()
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(12)
 
                 // Call Emergency Button
-                Button(action: { /* Add emergency call logic */ }) {
+                Button(action: { /* Emergency call logic */ }) {
                     Text("Call 911")
-                        .font(.custom("RedditSans-Bold", size: 18))
+                        .font(.custom("RedditSans-Bold", size: 16))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.red)
-                        .cornerRadius(8)
+                        .cornerRadius(12)
+                        .shadow(color: Color.red.opacity(0.4), radius: 5, x: 0, y: 2)
                 }
 
                 Spacer()
             }
             .padding()
         }
-        .background(Color(UIColor.systemGroupedBackground))
+        .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
         .onAppear {
             Task {
                 await viewModel.fetchExplanation(for: alert)
             }
         }
+    }
+}
+
+struct DetailCard<Content: View>: View {
+    let content: Content
+    
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            content
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }
 
@@ -308,28 +320,29 @@ struct InfoRowView: View {
     var body: some View {
         HStack {
             Text(label)
-                .font(.custom("RedditSans-Regular", size: 18))
-                .foregroundColor(.gray)
+                .font(.custom("RedditSans-Bold", size: 16))  // Bold label, 16pt
+                .foregroundColor(.black)
             Spacer()
             Text(value)
-                .font(.custom("RedditSans-Bold", size: 18))
-                .foregroundColor(.black)
+                .font(.custom("RedditSans-Regular", size: 16))  // Regular font, 16pt
+                .foregroundColor(.gray)
         }
     }
 }
 
+
+
 struct AlertDetailView_Previews: PreviewProvider {
     static var previews: some View {
         let dummyAlert = AlertItem(icon: "exclamationmark.triangle",
-                                   title: "Missing pill: Omega 3",
-                                   time: "1 missing",
+                                   title: "Over dosage: Test Pill",
+                                   time: "1 extra",
                                    logDate: Date(),
                                    recommendedDosage: 2,
-                                   yourDosage: 1)
+                                   yourDosage: 3)
         AlertDetailView(alert: dummyAlert)
     }
 }
-
 
 // Component for each alert row.
 struct AlertRowView: View {
