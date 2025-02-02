@@ -1,6 +1,5 @@
 import SwiftUI
 import FirebaseAuth
-import Foundation
 
 struct SignUpView: View {
     @State private var email = ""
@@ -22,21 +21,21 @@ struct SignUpView: View {
                         .frame(width: 60, height: 60)
                         .padding(.trailing, 10)
                 }
-
+                
                 // Sign-up title
                 HStack {
                     Text("Sign up")
                         .font(.custom("RedditSans-Bold", size: 32))
                         .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                    Spacer()  // Left-aligns the title
+                    Spacer()
                 }
-
+                
                 // Email Field
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Email")
                         .font(.custom("RedditSans-Regular", size: 14))
                         .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-
+                    
                     TextField("example@gmail.com", text: $email)
                         .padding()
                         .background(Color.gray.opacity(0.1))
@@ -45,38 +44,38 @@ struct SignUpView: View {
                         .disableAutocorrection(true)
                         .foregroundColor(.black)
                 }
-
+                
                 // Create Password Field
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Create a password")
                         .font(.custom("RedditSans-Regular", size: 14))
                         .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-
+                    
                     SecureField("must be 8 characters", text: $password)
                         .padding()
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
                 }
-
+                
                 // Confirm Password Field
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Confirm password")
                         .font(.custom("RedditSans-Regular", size: 14))
                         .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-
+                    
                     SecureField("repeat password", text: $confirmPassword)
                         .padding()
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
                 }
-
+                
                 // Error message
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .font(.caption)
                 }
-
+                
                 // Sign-up button
                 Button(action: signUp) {
                     Text("Sign up")
@@ -88,23 +87,23 @@ struct SignUpView: View {
                         .cornerRadius(8)
                 }
                 .disabled(isLoading)
-
-                Spacer()  // Pushes the sign-up link to the bottom
-
+                
+                Spacer()
+                
                 // Hidden navigation link to HomeView
                 NavigationLink(
                     destination: HomeView(),
                     isActive: $navigateToHome
                 ) {
-                    EmptyView()  // Hidden view to trigger navigation
+                    EmptyView()
                 }
-
+                
                 // Navigation to Login
                 HStack {
                     Text("Already have an account? ")
                         .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
                         .font(.footnote)
-
+                    
                     NavigationLink(destination: LoginView()) {
                         Text("Log in")
                             .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
@@ -115,36 +114,31 @@ struct SignUpView: View {
             .padding()
         }
     }
-
-    /// Sign-up logic using Firebase and saving to the database
+    
     private func signUp() {
         guard !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty else {
             errorMessage = "Please fill in all fields."
             return
         }
-
         guard password == confirmPassword else {
             errorMessage = "Passwords do not match."
             return
         }
-
+        
         isLoading = true
-
-        // Create the user using Firebase Authentication
+        
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             self.isLoading = false
-
+            
             if let error = error {
                 errorMessage = "Sign-up failed: \(error.localizedDescription)"
             } else if let result = result {
                 let uid = result.user.uid
-                let name = "User Name"  // Replace with actual user input if you collect it
+                // Save uid to UserDefaults for use by the app.
+                UserDefaults.standard.set(uid, forKey: "uid")
+                let name = "User Name"  // Replace with actual user input if available.
                 print("Firebase user created with UID: \(uid)")
-
-                // Save user details to MongoDB via backend
                 saveUserToDatabase(uid: uid, email: email, name: name)
-
-                // Trigger navigation to HomeView after successful sign-up
                 self.navigateToHome = true
                 print("Sign-up successful")
             }
@@ -158,18 +152,18 @@ func saveUserToDatabase(uid: String, email: String, name: String) {
         print("Invalid backend URL")
         return
     }
-
+    
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+    
     let user = ["uid": uid, "email": email, "name": name]
     guard let httpBody = try? JSONSerialization.data(withJSONObject: user, options: []) else {
         print("Failed to serialize user data")
         return
     }
     request.httpBody = httpBody
-
+    
     URLSession.shared.dataTask(with: request) { data, response, error in
         if let error = error {
             print("Error saving user to database: \(error)")
@@ -177,4 +171,10 @@ func saveUserToDatabase(uid: String, email: String, name: String) {
         }
         print("User saved successfully to MongoDB")
     }.resume()
+}
+
+struct SignUpView_Previews: PreviewProvider {
+    static var previews: some View {
+        SignUpView()
+    }
 }

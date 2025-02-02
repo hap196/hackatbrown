@@ -29,16 +29,21 @@ struct Pill: Codable, Identifiable, Equatable {
 }
 
 // MARK: - PillViewModel
+// MARK: - PillViewModel
 class PillViewModel: ObservableObject {
     @Published var pills: [Pill] = []
     
-    // Update these values as needed.
     let baseURL = "http://localhost:3000"
-    let uid = "y3du4q4Ux0WhONouB7azVhKHPNR2"
+    
+    // Instead of hardcoding the uid, read it from UserDefaults.
+    var uid: String {
+        // If no uid is found, you might want to handle it (for example, show a login screen).
+        UserDefaults.standard.string(forKey: "uid") ?? ""
+    }
     
     func fetchPills() async {
-        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills") else {
-            print("Invalid URL")
+        guard !uid.isEmpty, let url = URL(string: "\(baseURL)/users/\(uid)/pills") else {
+            print("Invalid URL or missing uid")
             return
         }
         do {
@@ -69,8 +74,8 @@ class PillViewModel: ObservableObject {
     }
     
     func updatePill(_ pill: Pill) async {
-        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)") else {
-            print("Invalid URL for update")
+        guard !uid.isEmpty, let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)") else {
+            print("Invalid URL or missing uid for update")
             return
         }
         do {
@@ -92,8 +97,8 @@ class PillViewModel: ObservableObject {
     }
     
     func deletePill(_ pill: Pill) async {
-        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)") else {
-            print("Invalid URL for delete")
+        guard !uid.isEmpty, let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)") else {
+            print("Invalid URL or missing uid for delete")
             return
         }
         do {
@@ -110,10 +115,10 @@ class PillViewModel: ObservableObject {
         }
     }
     
-    // New function: Log an intake for a pill.
+    // Log an intake for a pill.
     func logPillIntake(pill: Pill, amountTaken: Int, comments: String, logDate: String) async {
-        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)/intake") else {
-            print("Invalid URL for intake")
+        guard !uid.isEmpty, let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)/intake") else {
+            print("Invalid URL or missing uid for intake")
             return
         }
         var request = URLRequest(url: url)
@@ -141,7 +146,6 @@ class PillViewModel: ObservableObject {
             print("Error logging intake: \(error.localizedDescription)")
         }
     }
-
 }
 
 // MARK: - HomeView
