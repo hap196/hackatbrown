@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1CA32C112D4E999000B65243 /* hackatbrownApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C102D4E999000B65243 /* hackatbrownApp.swift */; };
 		1CA32C132D4E999000B65243 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C122D4E999000B65243 /* ContentView.swift */; };
-		1CA32C152D4E999100B65243 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C142D4E999100B65243 /* Assets.xcassets */; };
 		1CA32C182D4E999100B65243 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32C172D4E999100B65243 /* Preview Assets.xcassets */; };
 		1CA32C222D4E999100B65243 /* hackatbrownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C212D4E999100B65243 /* hackatbrownTests.swift */; };
 		1CA32C2C2D4E999100B65243 /* hackatbrownUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA32C2B2D4E999100B65243 /* hackatbrownUITests.swift */; };
@@ -57,6 +56,8 @@
 		1CA32CCD2D4ECE4200B65243 /* pillRoutes.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA32CCC2D4ECE4200B65243 /* pillRoutes.js */; };
 		1CEF5D062D4F69F100E196B0 /* package.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CEF5D052D4F69F100E196B0 /* package.json */; };
 		1CEF5D082D4F69F800E196B0 /* package-lock.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CEF5D072D4F69F800E196B0 /* package-lock.json */; };
+		1CEF5D0A2D4FA46D00E196B0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEF5D092D4FA46D00E196B0 /* ViewController.swift */; };
+		1CEF5D0C2D4FA48100E196B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CEF5D0B2D4FA48100E196B0 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +81,6 @@
 		1CA32C0D2D4E999000B65243 /* hackatbrown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hackatbrown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CA32C102D4E999000B65243 /* hackatbrownApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hackatbrownApp.swift; sourceTree = "<group>"; };
 		1CA32C122D4E999000B65243 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		1CA32C142D4E999100B65243 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CA32C172D4E999100B65243 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1CA32C1D2D4E999100B65243 /* hackatbrownTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hackatbrownTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CA32C212D4E999100B65243 /* hackatbrownTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = hackatbrownTests.swift; sourceTree = "<group>"; };
@@ -126,6 +126,8 @@
 		1CA32CCC2D4ECE4200B65243 /* pillRoutes.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = pillRoutes.js; sourceTree = "<group>"; };
 		1CEF5D052D4F69F100E196B0 /* package.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
 		1CEF5D072D4F69F800E196B0 /* package-lock.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "package-lock.json"; sourceTree = "<group>"; };
+		1CEF5D092D4FA46D00E196B0 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../../Downloads/CodeStuff/ViewController.swift; sourceTree = "<group>"; };
+		1CEF5D0B2D4FA48100E196B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../Downloads/CodeStuff/Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,13 +193,14 @@
 				1CA32C462D4E9E2900B65243 /* LoginView.swift */,
 				1CA32C4A2D4E9F5600B65243 /* SignUpView.swift */,
 				1CA32CC02D4EC2AB00B65243 /* SettingsView.swift */,
+				1CEF5D092D4FA46D00E196B0 /* ViewController.swift */,
 				1CA32CC62D4EC36500B65243 /* MainTabView.swift */,
 				1CA32CC22D4EC2B200B65243 /* AlertsView.swift */,
 				1CA32CC42D4EC2C000B65243 /* ScanView.swift */,
 				1CA32CBE2D4EC14200B65243 /* HomeView.swift */,
 				1CA32CCA2D4EC77900B65243 /* PlanView.swift */,
 				1CA32C482D4E9EF500B65243 /* LandingView.swift */,
-				1CA32C142D4E999100B65243 /* Assets.xcassets */,
+				1CEF5D0B2D4FA48100E196B0 /* Assets.xcassets */,
 				1CA32C162D4E999100B65243 /* Preview Content */,
 			);
 			path = hackatbrown;
@@ -423,7 +426,6 @@
 				1CA32CAC2D4EAEA600B65243 /* RedditSans-Regular.ttf in Resources */,
 				1CA32C182D4E999100B65243 /* Preview Assets.xcassets in Resources */,
 				1CA32C9F2D4EAEA600B65243 /* RedditSans-BlackItalic.ttf in Resources */,
-				1CA32C152D4E999100B65243 /* Assets.xcassets in Resources */,
 				1CA32C9C2D4EAEA600B65243 /* OFL.txt in Resources */,
 				1CA32CA82D4EAEA600B65243 /* RedditSans-Light.ttf in Resources */,
 				1CA32C9E2D4EAEA600B65243 /* RedditSans-Black.ttf in Resources */,
@@ -440,6 +442,7 @@
 				1CA32CAB2D4EAEA600B65243 /* RedditSans-MediumItalic.ttf in Resources */,
 				1CA32CBD2D4EBD2000B65243 /* userRoutes.js in Resources */,
 				1CA32CB72D4EBC2E00B65243 /* .env in Resources */,
+				1CEF5D0C2D4FA48100E196B0 /* Assets.xcassets in Resources */,
 				1CA32CBA2D4EBCFE00B65243 /* user.js in Resources */,
 				1CA32CA92D4EAEA600B65243 /* RedditSans-LightItalic.ttf in Resources */,
 				1CA32CA12D4EAEA600B65243 /* RedditSans-BoldItalic.ttf in Resources */,
@@ -478,6 +481,7 @@
 				1CA32CC52D4EC2C000B65243 /* ScanView.swift in Sources */,
 				1CA32CBF2D4EC14200B65243 /* HomeView.swift in Sources */,
 				1CA32CC92D4EC55400B65243 /* AuthViewModel.swift in Sources */,
+				1CEF5D0A2D4FA46D00E196B0 /* ViewController.swift in Sources */,
 				1CA32C132D4E999000B65243 /* ContentView.swift in Sources */,
 				1CA32C112D4E999000B65243 /* hackatbrownApp.swift in Sources */,
 				1CA32CC72D4EC36500B65243 /* MainTabView.swift in Sources */,
@@ -650,6 +654,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = hackatbrown/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses the camera to scan AR markers and provide augmented reality experiences.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -681,6 +686,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = hackatbrown/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses the camera to scan AR markers and provide augmented reality experiences.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

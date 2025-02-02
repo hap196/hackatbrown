@@ -13,7 +13,7 @@ struct MainTabView: View {
                 }
                 .tag(0)
             
-            ScanView()
+            ViewControllerWrapper()
                 .tabItem {
                     VStack {
                         Image(systemName: "qrcode.viewfinder")
