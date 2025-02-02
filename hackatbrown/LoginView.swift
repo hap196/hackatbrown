@@ -7,6 +7,9 @@ struct LoginView: View {
     @State private var errorMessage: String? = nil
     @State private var isLoading = false
     
+    // Track navigation to SignUpView
+    @State private var navigateToSignUp = false
+    
     // Access global authentication state
     @EnvironmentObject var authViewModel: AuthViewModel
     
@@ -91,13 +94,15 @@ struct LoginView: View {
                 
                 Spacer()
                 
-                // Sign-up link
-                HStack {
-                    Text("Don’t have an account? ")
-                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-                        .font(.footnote)
-                    
-                    NavigationLink(destination: SignUpView()) {
+                // Navigate programmatically
+                Button(action: {
+                    navigateToSignUp = true
+                }) {
+                    HStack {
+                        Text("Don’t have an account? ")
+                            .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+                            .font(.footnote)
+                        
                         Text("Sign up")
                             .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
                             .font(.footnote)
@@ -106,6 +111,15 @@ struct LoginView: View {
                 .padding(.bottom, 20)
             }
             .padding()
+            .background(
+                NavigationLink(
+                    destination: SignUpView()
+                        .navigationBarBackButtonHidden(true),  // Hide default back button
+                    isActive: $navigateToSignUp
+                ) {
+                    EmptyView()
+                }
+            )
         }
     }
     

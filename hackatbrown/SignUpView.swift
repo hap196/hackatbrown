@@ -7,112 +7,104 @@ struct SignUpView: View {
     @State private var confirmPassword = ""
     @State private var errorMessage: String? = nil
     @State private var isLoading = false
-    @State private var navigateToHome = false  // Track navigation state
-
+    
+    // Use environment to switch views after signing up
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 30) {
-                // Logo at the top right
-                HStack {
-                    Spacer()
-                    Image("logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 60, height: 60)
-                        .padding(.trailing, 10)
-                }
-                
-                // Sign-up title
-                HStack {
-                    Text("Sign up")
-                        .font(.custom("RedditSans-Bold", size: 32))
-                        .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                    Spacer()
-                }
-                
-                // Email Field
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Email")
-                        .font(.custom("RedditSans-Regular", size: 14))
-                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-                    
-                    TextField("example@gmail.com", text: $email)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-                        .foregroundColor(.black)
-                }
-                
-                // Create Password Field
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Create a password")
-                        .font(.custom("RedditSans-Regular", size: 14))
-                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-                    
-                    SecureField("must be 8 characters", text: $password)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                }
-                
-                // Confirm Password Field
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Confirm password")
-                        .font(.custom("RedditSans-Regular", size: 14))
-                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
-                    
-                    SecureField("repeat password", text: $confirmPassword)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                }
-                
-                // Error message
-                if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
-                }
-                
-                // Sign-up button
-                Button(action: signUp) {
-                    Text("Sign up")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(red: 0, green: 0.48, blue: 0.60))
-                        .cornerRadius(8)
-                }
-                .disabled(isLoading)
-                
+        VStack(spacing: 30) {
+            // Logo at the top right
+            HStack {
                 Spacer()
+                Image("logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
+                    .padding(.trailing, 10)
+            }
+            
+            // Sign-up title
+            HStack {
+                Text("Sign up")
+                    .font(.custom("RedditSans-Bold", size: 32))
+                    .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                Spacer()
+            }
+            
+            // Email Field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Email")
+                    .font(.custom("RedditSans-Regular", size: 14))
+                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
                 
-                // Hidden navigation link to HomeView
-                NavigationLink(
-                    destination: HomeView(),
-                    isActive: $navigateToHome
-                ) {
-                    EmptyView()
-                }
+                TextField("example@gmail.com", text: $email)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+                    .foregroundColor(.black)
+            }
+            
+            // Create Password Field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Create a password")
+                    .font(.custom("RedditSans-Regular", size: 14))
+                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
                 
-                // Navigation to Login
-                HStack {
-                    Text("Already have an account? ")
-                        .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+                SecureField("must be 8 characters", text: $password)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+            }
+            
+            // Confirm Password Field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Confirm password")
+                    .font(.custom("RedditSans-Regular", size: 14))
+                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+                
+                SecureField("repeat password", text: $confirmPassword)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+            }
+            
+            // Error message
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.caption)
+            }
+            
+            // Sign-up button
+            Button(action: signUp) {
+                Text("Sign up")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(red: 0, green: 0.48, blue: 0.60))
+                    .cornerRadius(8)
+            }
+            .disabled(isLoading)
+            
+            Spacer()
+            
+            // Navigation to Login
+            HStack {
+                Text("Already have an account? ")
+                    .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+                    .font(.footnote)
+                
+                NavigationLink(destination: LoginView()) {
+                    Text("Log in")
+                        .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
                         .font(.footnote)
-                    
-                    NavigationLink(destination: LoginView()) {
-                        Text("Log in")
-                            .foregroundColor(Color(red: 0.0, green: 0.48, blue: 0.60))
-                            .font(.footnote)
-                    }
                 }
             }
-            .padding()
         }
+        .padding()
     }
     
     private func signUp() {
@@ -134,12 +126,10 @@ struct SignUpView: View {
                 errorMessage = "Sign-up failed: \(error.localizedDescription)"
             } else if let result = result {
                 let uid = result.user.uid
-                // Save uid to UserDefaults for use by the app.
-                UserDefaults.standard.set(uid, forKey: "uid")
-                let name = "User Name"  // Replace with actual user input if available.
-                print("Firebase user created with UID: \(uid)")
+                UserDefaults.standard.set(uid, forKey: "uid")  // Save UID
+                let name = "User Name"
                 saveUserToDatabase(uid: uid, email: email, name: name)
-                self.navigateToHome = true
+                authViewModel.isLoggedIn = true  // Switch to MainTabView
                 print("Sign-up successful")
             }
         }
@@ -171,10 +161,4 @@ func saveUserToDatabase(uid: String, email: String, name: String) {
         }
         print("User saved successfully to MongoDB")
     }.resume()
-}
-
-struct SignUpView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignUpView()
-    }
 }
