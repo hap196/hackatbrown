@@ -13,7 +13,7 @@ struct LandingView: View {
                         .scaledToFit()
                         .frame(width: 150, height: 150)
 
-                    Text("MediGuard")
+                    Text("MediScan")
                         .font(.custom("RedditSans-Bold", size: 32))
                         .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
 
