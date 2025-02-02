@@ -173,7 +173,11 @@ struct SettingsView: View {
             "allergies": allergies
         ]
 
-        guard let url = URL(string: "http://localhost:3000/users") else {
+//        guard let url = URL(string: "http://localhost:3000/users") else {
+//            print("Invalid URL")
+//            return
+//        }
+        guard let url = URL(string: "https://hackatbrown.onrender.com/users") else {
             print("Invalid URL")
             return
         }

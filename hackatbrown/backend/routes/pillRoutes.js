@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const User = require('../models/user');
 
 // Add a new pill for a user
 router.post('/:uid/pills', async (req, res) => {

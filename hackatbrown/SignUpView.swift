@@ -138,7 +138,11 @@ struct SignUpView: View {
 
 /// Save user details to the backend API connected to MongoDB
 func saveUserToDatabase(uid: String, email: String, name: String) {
-    guard let url = URL(string: "http://localhost:3000/users") else {
+//    guard let url = URL(string: "http://localhost:3000/users") else {
+//        print("Invalid backend URL")
+//        return
+//    }
+    guard let url = URL(string: "https://hackatbrown.onrender.com/users") else {
         print("Invalid backend URL")
         return
     }

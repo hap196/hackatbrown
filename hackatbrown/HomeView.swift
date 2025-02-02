@@ -33,7 +33,8 @@ struct Pill: Codable, Identifiable, Equatable {
 class PillViewModel: ObservableObject {
     @Published var pills: [Pill] = []
     
-    let baseURL = "http://localhost:3000"
+//    let baseURL = "http://localhost:3000"
+    let baseURL = "https://hackatbrown.onrender.com"
     
     // Instead of hardcoding the uid, read it from UserDefaults.
     var uid: String {
