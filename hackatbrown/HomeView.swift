@@ -175,19 +175,11 @@ struct HomeView: View {
                     // Header and Calendar Button.
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Hello,")
+                            Text("Home")
                                 .font(.custom("RedditSans-Bold", size: 28))
                                 .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                            Text("John")
-                                .font(.custom("RedditSans-Regular", size: 28))
-                                .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
                         }
                         Spacer()
-                        Image("logo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 40, height: 40)
-                            .padding(.trailing)
                     }
                     .padding(.horizontal)
                     
