@@ -326,144 +326,189 @@ struct PillDetailView: View {
     @State private var additionalDetails: String = ""
 
     // New intake logging fields.
-    @State private var intakeAmount: String = ""
+    @State private var intakeAmount: String = "" // No autopopulation now.
     @State private var intakeComments: String = ""
 
     let notificationOptions = ["No Notification", "5 minutes before", "10 minutes before", "15 minutes before", "30 minutes before", "1 hour before", "2 hours before"]
     let frequencyOptions = ["Daily", "Weekly"]
 
+    // Helper: Total intake for logDate
+    private var totalTakenToday: Int {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: logDate)
+        return pill.intakeLogs?
+            .filter { calendar.isDate($0.date, inSameDayAs: dayStart) }
+            .map { $0.amount }
+            .reduce(0, +) ?? 0
+    }
+
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Pill Info")) {
+                Section(header: Text("Pill Info")
+                            .font(.custom("RedditSans-Bold", size: 18))
+                            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))) {
                     HStack {
                         Text("Pill Name:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             TextField("Pill Name", text: $pillName)
                                 .multilineTextAlignment(.trailing)
+                                .font(.custom("RedditSans-Regular", size: 16))
                         } else {
                             Text(pillName)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                     HStack {
                         Text("Amount:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             TextField("Amount", text: $pillAmount)
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
+                                .font(.custom("RedditSans-Regular", size: 16))
                         } else {
                             Text(pillAmount)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                     HStack {
                         Text("Duration (days):")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             TextField("Duration", text: $duration)
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
+                                .font(.custom("RedditSans-Regular", size: 16))
                         } else {
                             Text(duration)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                     HStack {
                         Text("Frequency:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             Picker("", selection: $howOften) {
                                 ForEach(frequencyOptions, id: \.self) { option in
                                     Text(option)
+                                        .font(.custom("RedditSans-Regular", size: 16))
                                 }
                             }
                             .pickerStyle(MenuPickerStyle())
                         } else {
                             Text(howOften)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                 }
                 
-                Section(header: Text("Time & Notification")) {
+                Section(header: Text("Time & Notification")
+                            .font(.custom("RedditSans-Bold", size: 18))
+                            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))) {
                     HStack {
                         Text("Specific Time:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             TextField("Specific Time", text: $specificTime)
                                 .multilineTextAlignment(.trailing)
+                                .font(.custom("RedditSans-Regular", size: 16))
                         } else {
                             Text(specificTime)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                     HStack {
                         Text("Notification:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             Picker("", selection: $notificationBefore) {
                                 ForEach(notificationOptions, id: \.self) { option in
                                     Text(option)
+                                        .font(.custom("RedditSans-Regular", size: 16))
                                 }
                             }
                             .pickerStyle(MenuPickerStyle())
                         } else {
                             Text(notificationBefore)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                 }
                 
-                Section(header: Text("Additional Info")) {
+                Section(header: Text("Additional Info")
+                            .font(.custom("RedditSans-Bold", size: 18))
+                            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))) {
                     HStack {
                         Text("Food Instruction:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
                         if isEditing {
                             TextField("Food Instruction", text: $foodInstruction)
                                 .multilineTextAlignment(.trailing)
+                                .font(.custom("RedditSans-Regular", size: 16))
                         } else {
                             Text(foodInstruction)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                     VStack(alignment: .leading) {
                         Text("Details:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         if isEditing {
                             TextEditor(text: $additionalDetails)
                                 .frame(height: 100)
                         } else {
                             Text(additionalDetails)
+                                .font(.custom("RedditSans-Regular", size: 16))
                                 .foregroundColor(.gray)
                         }
                     }
                 }
                 
-                // New Intake Logging Section.
-                Section(header: Text("Log Intake")) {
+                // Intake Logging Section
+                Section(header: Text("Log Intake")
+                            .font(.custom("RedditSans-Bold", size: 18))
+                            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))) {
+                    HStack {
+                        Text("Total Taken Today:")
+                            .font(.custom("RedditSans-Regular", size: 16))
+                        Spacer()
+                        Text("\(totalTakenToday)")
+                            .font(.custom("RedditSans-Regular", size: 16))
+                            .foregroundColor(.gray)
+                    }
+                    
                     HStack {
                         Text("Amount Taken:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         Spacer()
+                        // This field now uses a number pad and remains blank by default.
                         TextField("Enter amount", text: $intakeAmount)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
+                            .font(.custom("RedditSans-Regular", size: 16))
                     }
                     VStack(alignment: .leading) {
                         Text("Comments:")
-                            .fontWeight(.semibold)
+                            .font(.custom("RedditSans-Regular", size: 16))
                         TextEditor(text: $intakeComments)
                             .frame(height: 80)
+                            .font(.custom("RedditSans-Regular", size: 16))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.gray.opacity(0.5), lineWidth: 1)
@@ -475,10 +520,11 @@ struct PillDetailView: View {
                         }
                     }) {
                         Text("Log Intake")
+                            .font(.custom("RedditSans-Bold", size: 16))
                             .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundColor(.white)
                             .padding()
-                            .background(Color.blue)
+                            .background(Color(red: 0, green: 0.48, blue: 0.60))
                             .cornerRadius(8)
                     }
                 }
@@ -491,6 +537,7 @@ struct PillDetailView: View {
                             }
                         }) {
                             Text("Save Changes")
+                                .font(.custom("RedditSans-Bold", size: 16))
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .foregroundColor(.white)
                         }
@@ -507,18 +554,16 @@ struct PillDetailView: View {
                         HStack {
                             Spacer()
                             Text("Delete Pill")
+                                .font(.custom("RedditSans-Bold", size: 16))
                             Spacer()
                         }
                     }
                 }
             }
-            .navigationTitle("Pill Detail")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(isEditing ? "Cancel" : "Edit") {
-                        if isEditing {
-                            loadPillData() // Reset if canceling
-                        }
+                        if isEditing { loadPillData() }
                         isEditing.toggle()
                     }
                 }
@@ -543,6 +588,11 @@ struct PillDetailView: View {
         foodInstruction = pill.foodInstruction ?? ""
         notificationBefore = pill.notificationBefore ?? ""
         additionalDetails = pill.additionalDetails ?? ""
+        
+        // Do not autopopulate intakeAmount so the user must enter a new value.
+        intakeAmount = ""
+        // However, you may choose to preload intakeComments if desired (or leave it blank).
+        // Here, we'll leave intakeComments as-is.
     }
     
     private func updatePill() async {
@@ -573,16 +623,15 @@ struct PillDetailView: View {
             print("Invalid intake amount")
             return
         }
-        // Use the passed-in logDate (converted to ISO8601 string) to differentiate days.
         let formatter = ISO8601DateFormatter()
         let logDateString = formatter.string(from: logDate)
         
         await viewModel.logPillIntake(pill: pill, amountTaken: amountInt, comments: intakeComments, logDate: logDateString)
         
         await viewModel.fetchPills() // Refresh pill list to update logs
-        loadPillData() // Optionally reload local pill data
-        intakeAmount = ""
-        intakeComments = ""
+        
+        // Dismiss the detail view after logging intake.
+        dismiss()
     }
 }
 
