@@ -125,9 +125,26 @@ struct CalendarSheet: View {
     var body: some View {
         NavigationView {
             VStack {
+                // Smaller "Today" button placed at the top for easy access.
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        selectedDate = Date()
+                    }) {
+                        Text("Today")
+                            .font(.custom("RedditSans-Regular", size: 14))
+                            .padding(6)
+                            .background(Color.blue.opacity(0.2))
+                            .foregroundColor(.blue)
+                            .cornerRadius(8)
+                    }
+                    .padding(.trailing, 16) // Aligns with the date picker visually
+                }
+                
                 DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
                     .datePickerStyle(GraphicalDatePickerStyle())
                     .padding()
+                
                 Spacer()
             }
             .navigationTitle("Choose a Date")
@@ -141,6 +158,7 @@ struct CalendarSheet: View {
         }
     }
 }
+
 
 // WeekView displays the seven days for a given week offset.
 // The selected day now uses a filled background with a transparent blue (opacity 0.3).
