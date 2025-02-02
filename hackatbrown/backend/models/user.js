@@ -1,4 +1,11 @@
+// models/User.js
 const mongoose = require('mongoose');
+
+const intakeLogSchema = new mongoose.Schema({
+    date: { type: Date, default: Date.now },
+    amount: { type: Number, required: true },
+    comments: { type: String }
+});
 
 const pillSchema = new mongoose.Schema({
     pillName: { type: String, required: true },
@@ -8,7 +15,8 @@ const pillSchema = new mongoose.Schema({
     specificTime: { type: String },
     foodInstruction: { type: String },
     notificationBefore: { type: String },
-    additionalDetails: { type: String }
+    additionalDetails: { type: String },
+    intakeLogs: [intakeLogSchema]   // New field for intake logs
 }, { timestamps: true });
 
 const userSchema = new mongoose.Schema({
@@ -18,7 +26,4 @@ const userSchema = new mongoose.Schema({
     pills: [pillSchema]
 }, { timestamps: true });
 
-// Ensure the model is only compiled once
 module.exports = mongoose.models.User || mongoose.model('User', userSchema);
-
-

@@ -1,21 +1,30 @@
 import SwiftUI
 
+// MARK: - IntakeLog Model
+struct IntakeLog: Codable, Identifiable, Equatable {
+    var id: String?            // Provided by the backend
+    var date: Date
+    var amount: Int
+    var comments: String?
+}
+
 // MARK: - Pill Model
-struct Pill: Codable, Identifiable {
+struct Pill: Codable, Identifiable, Equatable {
     let id: String
-    let pillName: String
-    let amount: Int
-    let duration: Int           // Number of days the pill is scheduled
-    let howOften: String
-    let specificTime: String?
-    let foodInstruction: String?
-    let notificationBefore: String?
-    let additionalDetails: String?
-    let createdAt: Date?        // Provided by timestamps
+    var pillName: String
+    var amount: Int
+    var duration: Int           // Number of days the pill is scheduled
+    var howOften: String
+    var specificTime: String?
+    var foodInstruction: String?
+    var notificationBefore: String?
+    var additionalDetails: String?
+    var createdAt: Date?        // Provided by timestamps
+    var intakeLogs: [IntakeLog]?    // New property for logging intake
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case pillName, amount, duration, howOften, specificTime, foodInstruction, notificationBefore, additionalDetails, createdAt
+        case pillName, amount, duration, howOften, specificTime, foodInstruction, notificationBefore, additionalDetails, createdAt, intakeLogs
     }
 }
 
@@ -23,7 +32,7 @@ struct Pill: Codable, Identifiable {
 class PillViewModel: ObservableObject {
     @Published var pills: [Pill] = []
     
-    // Update this to your API base URL and the uid of the current user.
+    // Update these values as needed.
     let baseURL = "http://localhost:3000"
     let uid = "y3du4q4Ux0WhONouB7azVhKHPNR2"
     
@@ -32,35 +41,25 @@ class PillViewModel: ObservableObject {
             print("Invalid URL")
             return
         }
-        
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            if let httpResp = response as? HTTPURLResponse {
-                print("Status code: \(httpResp.statusCode)")
-                if httpResp.statusCode != 200 {
-                    if let responseBody = String(data: data, encoding: .utf8) {
-                        print("Response body: \(responseBody)")
-                    }
-                    print("Server error")
-                    return
-                }
+            if let httpResp = response as? HTTPURLResponse, httpResp.statusCode != 200 {
+                print("Server error, status: \(httpResp.statusCode)")
+                return
             }
-            
             let decoder = JSONDecoder()
-            // Use a custom date decoding strategy to support fractional seconds.
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             decoder.dateDecodingStrategy = .custom { decoder in
                 let container = try decoder.singleValueContainer()
                 let dateStr = try container.decode(String.self)
-                if let date = formatter.date(from: dateStr) {
+                if let date = isoFormatter.date(from: dateStr) {
                     return date
                 }
-                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateStr)")
+                throw DecodingError.dataCorruptedError(in: container,
+                                                       debugDescription: "Cannot decode date string \(dateStr)")
             }
-            
             let pills = try decoder.decode([Pill].self, from: data)
-            
             await MainActor.run {
                 self.pills = pills
             }
@@ -68,147 +67,222 @@ class PillViewModel: ObservableObject {
             print("Error fetching pills: \(error.localizedDescription)")
         }
     }
+    
+    func updatePill(_ pill: Pill) async {
+        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)") else {
+            print("Invalid URL for update")
+            return
+        }
+        do {
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let encoder = JSONEncoder()
+            request.httpBody = try encoder.encode(pill)
+            
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResp = response as? HTTPURLResponse, httpResp.statusCode == 200 {
+                print("Pill updated successfully")
+            } else {
+                print("Update failed")
+            }
+        } catch {
+            print("Error updating pill: \(error.localizedDescription)")
+        }
+    }
+    
+    func deletePill(_ pill: Pill) async {
+        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)") else {
+            print("Invalid URL for delete")
+            return
+        }
+        do {
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResp = response as? HTTPURLResponse, httpResp.statusCode == 200 {
+                print("Pill deleted successfully")
+            } else {
+                print("Delete failed")
+            }
+        } catch {
+            print("Error deleting pill: \(error.localizedDescription)")
+        }
+    }
+    
+    // New function: Log an intake for a pill.
+    func logPillIntake(pill: Pill, amountTaken: Int, comments: String, logDate: String) async {
+        guard let url = URL(string: "\(baseURL)/users/\(uid)/pills/\(pill.id)/intake") else {
+            print("Invalid URL for intake")
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let intakeData: [String: Any] = [
+            "amountTaken": amountTaken,
+            "comments": comments,
+            "logDate": logDate
+        ]
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: intakeData, options: []) else {
+            print("Error encoding intake data")
+            return
+        }
+        request.httpBody = httpBody
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResp = response as? HTTPURLResponse, httpResp.statusCode == 200 {
+                print("Intake logged successfully")
+            } else {
+                print("Intake logging failed")
+            }
+        } catch {
+            print("Error logging intake: \(error.localizedDescription)")
+        }
+    }
+
 }
 
 // MARK: - HomeView
 struct HomeView: View {
-    // For testing purposes, set currentDate and selectedDate to February 1, 2025.
+    // For testing, set currentDate to Feb 1, 2025.
     @State private var currentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 1)) ?? Date()
     @State private var selectedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 1)) ?? Date()
+    @State private var weekOffset = 0
+    @State private var showCalendar = false
+    @State private var selectedPill: Pill? = nil
     
-    @State private var weekOffset = 0                 // Current week page offset
-    @State private var showCalendar = false           // Controls calendar sheet display
-    
-    @StateObject private var pillVM = PillViewModel()   // ViewModel for pills
+    @StateObject private var pillVM = PillViewModel()
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                // Top header with greeting and logo
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Hello,")
-                            .font(.custom("RedditSans-Bold", size: 28))
-                            .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
-                        Text("John")
-                            .font(.custom("RedditSans-Regular", size: 28))
-                            .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 12) {
+                    // Header and Calendar Button (same as before)
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Hello,")
+                                .font(.custom("RedditSans-Bold", size: 28))
+                                .foregroundColor(Color(red: 0, green: 0.48, blue: 0.60))
+                            Text("John")
+                                .font(.custom("RedditSans-Regular", size: 28))
+                                .foregroundColor(Color(red: 0.251, green: 0.251, blue: 0.251))
+                        }
+                        Spacer()
+                        Image("logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .padding(.trailing)
                     }
+                    .padding(.horizontal)
+                    
+                    HStack {
+                        Text(dateHeaderString(for: selectedDate))
+                            .font(.custom("RedditSans-Bold", size: 20))
+                            .foregroundColor(.black)
+                        Spacer()
+                        Button {
+                            showCalendar.toggle()
+                        } label: {
+                            Image(systemName: "calendar")
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 6)
+                    
+                    // Week swiping.
+                    TabView(selection: $weekOffset) {
+                        ForEach(-100...100, id: \.self) { offset in
+                            WeekView(weekOffset: offset, selectedDate: $selectedDate)
+                                .tag(offset)
+                        }
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                    .frame(height: 110)
+                    .onChange(of: weekOffset) { newOffset in
+                        let newWeekStart = weekStart(for: newOffset)
+                        selectedDate = newWeekStart
+                    }
+                    
+                    CircularProgressView(progress: 0.75)
+                        .frame(width: 150, height: 150)
+                        .padding(.top)
+                    
+                    Spacer().frame(height: 20)
+                    
+                    // Medication list: Each card shows the logged intake (e.g., "1/2")
+                    VStack(spacing: 10) {
+                        ForEach(pillsForSelectedDate(), id: \.id) { pill in
+                            let logged = getLoggedAmount(for: pill, on: selectedDate)
+                            MedicationItemView(
+                                name: pill.pillName,
+                                time: pill.specificTime ?? "N/A",
+                                dose: "\(logged)/\(pill.amount)",
+                                period: pill.foodInstruction ?? ""
+                            )
+                            .onTapGesture {
+                                selectedPill = pill
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    
                     Spacer()
-                    Image("logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40, height: 40)
-                        .padding(.trailing)
                 }
-                .padding(.horizontal)
-                
-                // Header showing the selected date in "Month Date, Year" format and a calendar button
-                HStack {
-                    Text(dateHeaderString(for: selectedDate))
-                        .font(.custom("RedditSans-Bold", size: 20))
-                        .foregroundColor(.black)
-                    Spacer()
-                    Button {
-                        showCalendar.toggle()
-                    } label: {
-                        Image(systemName: "calendar")
-                            .font(.title2)
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.top, 6)
-                
-                // Week swiping: each page represents a full week.
-                TabView(selection: $weekOffset) {
-                    ForEach(-100...100, id: \.self) { offset in
-                        WeekView(weekOffset: offset, selectedDate: $selectedDate)
-                            .tag(offset)
-                    }
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(height: 110)
-                .onChange(of: weekOffset) { newOffset in
-                    let newWeekStart = weekStart(for: newOffset)
-                    selectedDate = newWeekStart
-                }
-                
-                // Circular progress view remains unchanged.
-                CircularProgressView(progress: 0.75)
-                    .frame(width: 150, height: 150)
-                    .padding(.top)
-                
-                Spacer().frame(height: 20)
-                
-                // Medication list: show pills filtered for the selected date.
-                VStack(spacing: 10) {
-                    ForEach(pillsForSelectedDate(), id: \.id) { pill in
-                        MedicationItemView(
-                            name: pill.pillName,
-                            time: pill.specificTime ?? "N/A",
-                            dose: "\(pill.amount) \(pill.howOften)",
-                            period: pill.foodInstruction ?? ""
-                        )
-                    }
-                }
-                .padding(.horizontal)
-                
-                Spacer()
+                .padding(.top, 20)
+                .background(Color.white)
             }
-            .padding(.top, 20)
-            .background(Color.white)
-        }
-        .ignoresSafeArea(edges: .bottom)
-        .navigationBarHidden(true)
-        .sheet(isPresented: $showCalendar) {
-            CalendarSheet(selectedDate: $selectedDate, showCalendar: $showCalendar)
-        }
-        .onChange(of: selectedDate) { newDate in
-            let calendar = Calendar.current
-            if let newWeekStart = calendar.dateInterval(of: .weekOfYear, for: newDate)?.start {
-                let currentWeekStart = weekStart(for: weekOffset)
-                if !calendar.isDate(newWeekStart, inSameDayAs: currentWeekStart) {
-                    if let weeksDifference = calendar.dateComponents([.weekOfYear], from: currentWeekStart, to: newWeekStart).weekOfYear {
-                        weekOffset += weeksDifference
+            .ignoresSafeArea(edges: .bottom)
+            .navigationBarHidden(true)
+            .sheet(isPresented: $showCalendar) {
+                CalendarSheet(selectedDate: $selectedDate, showCalendar: $showCalendar)
+            }
+            .sheet(item: $selectedPill) { pill in
+                PillDetailView(viewModel: pillVM, pill: pill, logDate: selectedDate)
+            }
+            .onChange(of: selectedDate) { newDate in
+                let calendar = Calendar.current
+                if let newWeekStart = calendar.dateInterval(of: .weekOfYear, for: newDate)?.start {
+                    let currentWeekStart = weekStart(for: weekOffset)
+                    if !calendar.isDate(newWeekStart, inSameDayAs: currentWeekStart) {
+                        if let weeksDifference = calendar.dateComponents([.weekOfYear], from: currentWeekStart, to: newWeekStart).weekOfYear {
+                            weekOffset += weeksDifference
+                        }
                     }
                 }
             }
-        }
-        .task {
-            await pillVM.fetchPills()
+            .task {
+                await pillVM.fetchPills()
+            }
         }
     }
     
-    // Returns the start date for the week at a given offset.
     private func weekStart(for offset: Int) -> Date {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: currentDate)
         return calendar.date(byAdding: .weekOfYear, value: offset, to: today) ?? today
     }
     
-    // Returns a string for the header date in "MMMM d, yyyy" format.
     private func dateHeaderString(for date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d, yyyy"
         return formatter.string(from: date)
     }
     
-    // Filter pills to include only those that should be taken on the selected day.
+    // Filter pills as before.
     private func pillsForSelectedDate() -> [Pill] {
         let calendar = Calendar.current
         let selectedStart = calendar.startOfDay(for: selectedDate)
         return pillVM.pills.filter { pill in
             guard let createdAt = pill.createdAt else { return false }
-            
             let pillStart = calendar.startOfDay(for: createdAt)
             guard let rawEnd = calendar.date(byAdding: .day, value: pill.duration, to: createdAt) else { return false }
             let pillEnd = calendar.startOfDay(for: rawEnd)
-            
-            guard selectedStart >= pillStart && selectedStart <= pillEnd else {
-                return false
-            }
-            
+            guard selectedStart >= pillStart && selectedStart <= pillEnd else { return false }
             if pill.howOften.lowercased() == "daily" {
                 return true
             } else if pill.howOften.lowercased() == "weekly" {
@@ -220,9 +294,299 @@ struct HomeView: View {
             }
         }
     }
+    
+    // Helper to compute the logged intake for a pill on a given day.
+    private func getLoggedAmount(for pill: Pill, on date: Date) -> Int {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: date)
+        return pill.intakeLogs?
+            .filter { calendar.isDate($0.date, inSameDayAs: dayStart) }
+            .map { $0.amount }
+            .reduce(0, +) ?? 0
+    }
 }
 
-// MARK: - CalendarSheet
+// MARK: - PillDetailView
+struct PillDetailView: View {
+    @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: PillViewModel
+    @State var pill: Pill
+    let logDate: Date    // This is the selected date from HomeView
+
+    @State private var isEditing = false
+
+    // Editable fields with context labels.
+    @State private var pillName: String = ""
+    @State private var pillAmount: String = ""
+    @State private var duration: String = ""
+    @State private var howOften: String = ""
+    @State private var specificTime: String = ""
+    @State private var foodInstruction: String = ""
+    @State private var notificationBefore: String = ""
+    @State private var additionalDetails: String = ""
+
+    // New intake logging fields.
+    @State private var intakeAmount: String = ""
+    @State private var intakeComments: String = ""
+
+    let notificationOptions = ["No Notification", "5 minutes before", "10 minutes before", "15 minutes before", "30 minutes before", "1 hour before", "2 hours before"]
+    let frequencyOptions = ["Daily", "Weekly"]
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Pill Info")) {
+                    HStack {
+                        Text("Pill Name:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            TextField("Pill Name", text: $pillName)
+                                .multilineTextAlignment(.trailing)
+                        } else {
+                            Text(pillName)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    HStack {
+                        Text("Amount:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            TextField("Amount", text: $pillAmount)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.trailing)
+                        } else {
+                            Text(pillAmount)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    HStack {
+                        Text("Duration (days):")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            TextField("Duration", text: $duration)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.trailing)
+                        } else {
+                            Text(duration)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    HStack {
+                        Text("Frequency:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            Picker("", selection: $howOften) {
+                                ForEach(frequencyOptions, id: \.self) { option in
+                                    Text(option)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                        } else {
+                            Text(howOften)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                
+                Section(header: Text("Time & Notification")) {
+                    HStack {
+                        Text("Specific Time:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            TextField("Specific Time", text: $specificTime)
+                                .multilineTextAlignment(.trailing)
+                        } else {
+                            Text(specificTime)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    HStack {
+                        Text("Notification:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            Picker("", selection: $notificationBefore) {
+                                ForEach(notificationOptions, id: \.self) { option in
+                                    Text(option)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                        } else {
+                            Text(notificationBefore)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                
+                Section(header: Text("Additional Info")) {
+                    HStack {
+                        Text("Food Instruction:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        if isEditing {
+                            TextField("Food Instruction", text: $foodInstruction)
+                                .multilineTextAlignment(.trailing)
+                        } else {
+                            Text(foodInstruction)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    VStack(alignment: .leading) {
+                        Text("Details:")
+                            .fontWeight(.semibold)
+                        if isEditing {
+                            TextEditor(text: $additionalDetails)
+                                .frame(height: 100)
+                        } else {
+                            Text(additionalDetails)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+                
+                // New Intake Logging Section.
+                Section(header: Text("Log Intake")) {
+                    HStack {
+                        Text("Amount Taken:")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        TextField("Enter amount", text: $intakeAmount)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    VStack(alignment: .leading) {
+                        Text("Comments:")
+                            .fontWeight(.semibold)
+                        TextEditor(text: $intakeComments)
+                            .frame(height: 80)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                            )
+                    }
+                    Button(action: {
+                        Task {
+                            await logIntake()
+                        }
+                    }) {
+                        Text("Log Intake")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                    }
+                }
+                
+                if isEditing {
+                    Section {
+                        Button(action: {
+                            Task {
+                                await updatePill()
+                            }
+                        }) {
+                            Text("Save Changes")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .foregroundColor(.white)
+                        }
+                        .listRowBackground(Color(red: 0, green: 0.48, blue: 0.60))
+                    }
+                }
+                
+                Section {
+                    Button(role: .destructive, action: {
+                        Task {
+                            await deletePill()
+                        }
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text("Delete Pill")
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Pill Detail")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(isEditing ? "Cancel" : "Edit") {
+                        if isEditing {
+                            loadPillData() // Reset if canceling
+                        }
+                        isEditing.toggle()
+                    }
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+            .onAppear {
+                loadPillData()
+            }
+        }
+    }
+    
+    private func loadPillData() {
+        pillName = pill.pillName
+        pillAmount = "\(pill.amount)"
+        duration = "\(pill.duration)"
+        howOften = pill.howOften
+        specificTime = pill.specificTime ?? ""
+        foodInstruction = pill.foodInstruction ?? ""
+        notificationBefore = pill.notificationBefore ?? ""
+        additionalDetails = pill.additionalDetails ?? ""
+    }
+    
+    private func updatePill() async {
+        guard let amountInt = Int(pillAmount), let durationInt = Int(duration) else { return }
+        pill.pillName = pillName
+        pill.amount = amountInt
+        pill.duration = durationInt
+        pill.howOften = howOften
+        pill.specificTime = specificTime
+        pill.foodInstruction = foodInstruction
+        pill.notificationBefore = notificationBefore
+        pill.additionalDetails = additionalDetails
+        
+        await viewModel.updatePill(pill)
+        await viewModel.fetchPills()
+        isEditing = false
+        dismiss()
+    }
+    
+    private func deletePill() async {
+        await viewModel.deletePill(pill)
+        await viewModel.fetchPills()
+        dismiss()
+    }
+    
+    private func logIntake() async {
+        guard let amountInt = Int(intakeAmount) else {
+            print("Invalid intake amount")
+            return
+        }
+        // Use the passed-in logDate (converted to ISO8601 string) to differentiate days.
+        let formatter = ISO8601DateFormatter()
+        let logDateString = formatter.string(from: logDate)
+        
+        await viewModel.logPillIntake(pill: pill, amountTaken: amountInt, comments: intakeComments, logDate: logDateString)
+        
+        await viewModel.fetchPills() // Refresh pill list to update logs
+        loadPillData() // Optionally reload local pill data
+        intakeAmount = ""
+        intakeComments = ""
+    }
+}
+
+// MARK: - CalendarSheet, WeekView, CircularProgressView, MedicationItemView
 struct CalendarSheet: View {
     @Binding var selectedDate: Date
     @Binding var showCalendar: Bool
@@ -263,7 +627,6 @@ struct CalendarSheet: View {
     }
 }
 
-// MARK: - WeekView
 struct WeekView: View {
     let weekOffset: Int
     @Binding var selectedDate: Date
@@ -317,7 +680,6 @@ struct WeekView: View {
     }
 }
 
-// MARK: - CircularProgressView
 struct CircularProgressView: View {
     var progress: Double
 
@@ -336,7 +698,6 @@ struct CircularProgressView: View {
     }
 }
 
-// MARK: - MedicationItemView
 struct MedicationItemView: View {
     var name: String
     var time: String
