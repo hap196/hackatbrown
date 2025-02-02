@@ -155,6 +155,15 @@ struct HomeView: View {
     
     @StateObject private var pillVM = PillViewModel()
     
+    private var dailyProgress: Double {
+            let pills = pillsForSelectedDate()
+            let totalRequired = pills.reduce(0) { $0 + $1.amount }
+            let totalLogged = pills.reduce(0) { $0 + getLoggedAmount(for: $1, on: selectedDate) }
+            guard totalRequired > 0 else { return 0 }
+            let progress = Double(totalLogged) / Double(totalRequired)
+            return min(progress, 1.0)
+        }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -208,30 +217,33 @@ struct HomeView: View {
                         selectedDate = newWeekStart
                     }
                     
-                    CircularProgressView(progress: 0.75)
+                    // Updated Circular Progress View:
+                    CircularProgressView(progress: dailyProgress)
                         .frame(width: 150, height: 150)
                         .padding(.top)
-                    
+                                       
                     Spacer().frame(height: 20)
                     
-                    // Medication list: Each card shows the logged intake (e.g., "1/2")
-                    VStack(spacing: 10) {
-                        ForEach(pillsForSelectedDate(), id: \.id) { pill in
-                            let logged = getLoggedAmount(for: pill, on: selectedDate)
-                            MedicationItemView(
-                                name: pill.pillName,
-                                time: pill.specificTime ?? "N/A",
-                                dose: "\(logged)/\(pill.amount)",
-                                period: pill.foodInstruction ?? ""
-                            )
-                            .onTapGesture {
-                                selectedPill = pill
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    Spacer()
+                    // Medication list: each card now determines its background based on completion.
+                                        VStack(spacing: 10) {
+                                            ForEach(pillsForSelectedDate(), id: \.id) { pill in
+                                                let logged = getLoggedAmount(for: pill, on: selectedDate)
+                                                let completed = logged >= pill.amount
+                                                MedicationItemView(
+                                                    name: pill.pillName,
+                                                    time: pill.specificTime ?? "N/A",
+                                                    dose: "\(logged)/\(pill.amount)",
+                                                    period: pill.foodInstruction ?? "",
+                                                    completed: completed
+                                                )
+                                                .onTapGesture {
+                                                    selectedPill = pill
+                                                }
+                                            }
+                                        }
+                                        .padding(.horizontal)
+                                        
+                                        Spacer()
                 }
                 .padding(.top, 20)
                 .background(Color.white)
@@ -729,6 +741,7 @@ struct WeekView: View {
     }
 }
 
+// MARK: - CircularProgressView (Modified)
 struct CircularProgressView: View {
     var progress: Double
 
@@ -747,11 +760,14 @@ struct CircularProgressView: View {
     }
 }
 
+
+// MARK: - MedicationItemView (Modified)
 struct MedicationItemView: View {
     var name: String
     var time: String
     var dose: String
     var period: String
+    var completed: Bool    // New property
 
     var body: some View {
         HStack {
@@ -774,10 +790,12 @@ struct MedicationItemView: View {
         }
         .padding()
         .padding(.horizontal)
-        .background(Color.green.opacity(0.1))
+        // Use green background if completed; otherwise, gray.
+        .background(completed ? Color.green.opacity(0.1) : Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
 }
+
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
