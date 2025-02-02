@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>OpenAIAPIKey</key>
+	<string>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</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>RedditSans-Bold.ttf</string>
